@@ -25,4 +25,7 @@ Route::get('auth/google', [SocialiteController::class, 'redirectToGoogle'])->nam
 Route::get('auth/google-callback', [SocialiteController::class, 'handleGoogleCallback']);
 
 
+Route::post('user/avatar/{user}', [ProfileController::class, 'updateAvatar'])->name('user.avatar.update');
+
+
 Route::resource('user', ProfileController::class)->middleware('auth')->except(['create', 'store', 'index']);

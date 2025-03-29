@@ -1,5 +1,6 @@
 import { useForm, usePage } from "@inertiajs/react";
 import { useRef, useState } from "react";
+import avatarImg from "../../../img/person.png";
 
 export default function Edit({ user }) {
     const fileInputRef = useRef(null);
@@ -7,7 +8,7 @@ export default function Edit({ user }) {
 
     const [message, setMessage] = useState(flash.message);
 
-    const { data, setData, patch, processing, errors } = useForm({
+    const { data, setData, patch, post, processing, errors } = useForm({
         name: user.name,
         username: user.username,
         email: user.email,
@@ -18,12 +19,31 @@ export default function Edit({ user }) {
         fileInputRef.current.click();
     };
 
+    let avatar = "";
+    if (user.avatar !== null && user?.avatar.startsWith("http")) {
+        avatar = user.avatar;
+    } else if (user?.avatar !== null) {
+        avatar = `/storage/${user.avatar}`;
+    } else if (user?.avatar === null) {
+        avatar = avatarImg;
+    }
+
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            setData("avatar", file);
-            post("/profile/avatar", {
-                onSuccess: () => window.location.reload(),
+            const formData = new FormData();
+            formData.append("avatar", file);
+
+            fetch(`/user/avatar/${user.id}`, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRF-TOKEN": document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute("content"),
+                },
+            }).then(() => {
+                window.location.reload();
             });
         }
     };
@@ -41,19 +61,19 @@ export default function Edit({ user }) {
     return (
         <>
             {message && (
-                <div role="alert" class="alert alert-info mx-6 my-4">
+                <div role="alert" className="alert alert-success mx-6 my-4">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 shrink-0 stroke-current"
                         fill="none"
                         viewBox="0 0 24 24"
-                        class="h-6 w-6 shrink-0 stroke-current"
                     >
                         <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        ></path>
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                     </svg>
                     <span>{message}</span>
                 </div>
@@ -67,26 +87,23 @@ export default function Edit({ user }) {
                 </div>
             )}
             <div className="w-full flex justify-center">
-                <fieldset class="fieldset w-1/2 bg-base-200 border border-base-300 p-4 rounded-box">
+                <fieldset className="fieldset w-1/2 bg-base-200 border border-base-300 p-4 rounded-box">
                     <div className="p-6 text-center border-b">
                         <input
                             type="file"
                             ref={fileInputRef}
                             className="hidden"
-                            // onChange={handleFileChange}
+                            onChange={handleFileChange}
                         />
                         <img
-                            src={
-                                user?.avatar ||
-                                "https://via.placeholder.com/100"
-                            }
+                            src={avatar}
                             alt="Profile"
                             className="w-24 h-24 rounded-full mx-auto border border-gray-300 cursor-pointer hover:opacity-75 transition"
                             onClick={handleAvatarClick}
                         />
                     </div>
 
-                    <legend class="fieldset-legend">Profile Edit</legend>
+                    <legend className="fieldset-legend">Profile Edit</legend>
                     <form onSubmit={submit} className="space-y-2 w-full">
                         <label className="input w-full">
                             <svg

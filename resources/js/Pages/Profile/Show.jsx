@@ -1,12 +1,21 @@
 import { Link, usePage } from "@inertiajs/react";
+import avatarImg from "../../../img/person.png";
 
 export default function Show({ user }) {
+    let avatar = "";
+    if (user.avatar !== null && user?.avatar.startsWith("http")) {
+        avatar = user.avatar;
+    } else if (user?.avatar !== null) {
+        avatar = `/storage/${user.avatar}`;
+    } else if (user?.avatar === null) {
+        avatar = avatarImg;
+    }
     return (
         <div className="flex justify-center items-center min-h-screen p-4">
             <div className="shadow-lg shadow-accent-content rounded-lg overflow-hidden w-full max-w-lg">
                 <div className="p-6 text-center border-b">
                     <img
-                        src={user?.avatar || "https://via.placeholder.com/100"}
+                        src={avatar}
                         alt="Profile"
                         className="w-24 h-24 rounded-full mx-auto border border-gray-300"
                     />

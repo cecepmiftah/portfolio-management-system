@@ -45,4 +45,18 @@ class ProfileController extends Controller
 
         return to_route('user.edit', $user)->with('message', 'Profile updated successfully');
     }
+
+    public function updateAvatar(User $user, Request $request)
+    {
+
+        if ($request->hasFile('avatar')) {
+            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $avatarPath;
+            $user->save();
+            return back()->with('success', 'Avatar updated successfully');
+        } else {
+
+            return back()->withErrors(['error' => 'Failed to update avatar']);
+        }
+    }
 }
