@@ -86,7 +86,10 @@ export default function Login() {
                                 </button>
                             </form>
                             <div className="divider">OR</div>
-                            <button className="btn bg-white mx-6 my-4 text-black border-[#e5e5e5]">
+                            <a
+                                href="/auth/google"
+                                className="btn bg-white mx-6 my-4 text-black border-[#e5e5e5]"
+                            >
                                 <svg
                                     aria-label="Google logo"
                                     width="16"
@@ -118,7 +121,7 @@ export default function Login() {
                                     </g>
                                 </svg>
                                 Login with Google
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>

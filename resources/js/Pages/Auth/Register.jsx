@@ -24,6 +24,11 @@ export default function Register() {
 
     return (
         <>
+            {errors.googleError && (
+                <div role="alert" className="alert alert-error alert-soft">
+                    <span>{errors.googleError}</span>
+                </div>
+            )}
             <div className="hero bg-base-200 min-h-screen">
                 <div className="hero-content w-full flex-col lg:flex-row">
                     <div className="hidden md:block text-center w-1/3 lg:text-left">
@@ -131,7 +136,10 @@ export default function Register() {
                                 </button>
                             </form>
                             <div className="divider">OR</div>
-                            <button className="btn bg-white mx-6 my-4 text-black border-[#e5e5e5]">
+                            <a
+                                href="/auth/google"
+                                className="btn bg-white mx-6 my-4 text-black border-[#e5e5e5]"
+                            >
                                 <svg
                                     aria-label="Google logo"
                                     width="16"
@@ -162,8 +170,8 @@ export default function Register() {
                                         ></path>
                                     </g>
                                 </svg>
-                                Login with Google
-                            </button>
+                                Register with Google
+                            </a>
                         </div>
                     </div>
                 </div>

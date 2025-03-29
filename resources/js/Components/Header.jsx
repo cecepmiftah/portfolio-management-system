@@ -1,5 +1,5 @@
 import { Link, router, usePage } from "@inertiajs/react";
-import React from "react";
+import avatarImg from "../../img/person.png";
 
 export default function Header() {
     const { auth } = usePage().props;
@@ -49,7 +49,10 @@ export default function Header() {
                                         <div className="w-10 rounded-full">
                                             <img
                                                 alt="Tailwind CSS Navbar component"
-                                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                                                src={
+                                                    auth.user.avatar ??
+                                                    avatarImg
+                                                }
                                             />
                                         </div>
                                     </div>
@@ -140,7 +143,7 @@ export default function Header() {
                                 <div className="w-10 rounded-full">
                                     <img
                                         alt="Tailwind CSS Navbar component"
-                                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                                        src={auth.user.avatar ?? avatarImg}
                                     />
                                 </div>
                             </div>
