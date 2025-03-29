@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SocialiteController;
 use Illuminate\Support\Facades\Route;
@@ -22,3 +23,6 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google-callback', [SocialiteController::class, 'handleGoogleCallback']);
+
+
+Route::resource('user', ProfileController::class)->middleware('auth')->except(['create', 'store', 'index']);

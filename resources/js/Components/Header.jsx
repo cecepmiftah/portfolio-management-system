@@ -4,7 +4,6 @@ import avatarImg from "../../img/person.png";
 export default function Header() {
     const { auth } = usePage().props;
 
-    console.log(auth);
     function logout(e) {
         e.preventDefault();
 
@@ -56,7 +55,9 @@ export default function Header() {
                                             />
                                         </div>
                                     </div>
-                                    <a href="#">{auth.user.name}</a>
+                                    <Link href={`/user/${auth.user.id}`}>
+                                        {auth.user.name}
+                                    </Link>
                                 </div>
                             </li>
                         )}
@@ -152,7 +153,10 @@ export default function Header() {
                                 className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
                             >
                                 <li>
-                                    <Link className="justify-between">
+                                    <Link
+                                        href={`/user/${auth.user.id}`}
+                                        className="justify-between"
+                                    >
                                         Profile
                                     </Link>
                                 </li>
