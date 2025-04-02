@@ -98,7 +98,7 @@ export default function Edit({ user }) {
                         <img
                             src={avatar}
                             alt="Profile"
-                            className="w-24 h-24 rounded-full mx-auto border border-gray-300 cursor-pointer hover:opacity-75 transition"
+                            className="w-24 h-24 rounded-full mx-auto border border-gray-300 cursor-pointer hover:opacity-75 transition object-cover"
                             onClick={handleAvatarClick}
                         />
                     </div>

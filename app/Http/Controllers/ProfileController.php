@@ -4,9 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Storage;
 
-class ProfileController extends Controller
+class ProfileController extends Controller implements HasMiddleware
 {
+
+    public static function middleware()
+    {
+        return [
+            new Middleware(['auth', 'can:update,user'])
+        ];
+    }
+
     public function show(User $user)
     {
         return inertia('Profile/Show', [
@@ -50,6 +61,15 @@ class ProfileController extends Controller
     {
 
         if ($request->hasFile('avatar')) {
+
+            $request->validate([
+                'avatar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            ]);
+
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+
             $avatarPath = $request->file('avatar')->store('avatars', 'public');
             $user->avatar = $avatarPath;
             $user->save();

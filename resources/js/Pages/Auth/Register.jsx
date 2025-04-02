@@ -35,7 +35,7 @@ export default function Register() {
                         <figure className="diff aspect-16/9" tabIndex={0}>
                             <div className="diff-item-1" role="img">
                                 <div className="bg-primary text-primary-content grid place-content-center text-6xl font-black">
-                                    Register
+                                    FolioSnap
                                 </div>
                             </div>
                             <div
@@ -44,7 +44,7 @@ export default function Register() {
                                 tabIndex={0}
                             >
                                 <div className="bg-base-200 grid place-content-center text-6xl font-black">
-                                    Register
+                                    FolioSnap
                                 </div>
                             </div>
                             <div className="diff-resizer"></div>
@@ -56,6 +56,12 @@ export default function Register() {
                                 onSubmit={submit}
                                 className="flex flex-col space-y-4 mx-6 my-4"
                             >
+                                <h1 className="text-xl text-center">
+                                    Register to{" "}
+                                    <span className="font-bold text-primary">
+                                        FolioSnap
+                                    </span>
+                                </h1>
                                 <label className="label">Your Name</label>
                                 <input
                                     type="text"
