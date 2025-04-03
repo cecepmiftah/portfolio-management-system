@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SocialiteController;
@@ -29,3 +30,9 @@ Route::post('user/avatar/{user}', [ProfileController::class, 'updateAvatar'])->n
 
 
 Route::resource('user', ProfileController::class)->middleware('auth')->except(['create', 'store', 'index']);
+
+Route::controller(PortfolioController::class)->group(function () {
+    Route::get('/portfolios', 'index')->name('portfolios.index');
+    Route::get('/portfolios/create', 'create')->name('portfolios.create');
+    Route::get('/portfolios/{id}', 'show')->name('portfolios.show');
+});

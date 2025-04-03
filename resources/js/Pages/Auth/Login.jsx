@@ -1,12 +1,10 @@
 import { useForm } from "@inertiajs/react";
 
 export default function Login() {
-    const { data, setData, post, processing, errors, transform } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         email: "",
         password: "",
     });
-
-    console.log(errors);
 
     function submit(e) {
         e.preventDefault();
@@ -16,6 +14,11 @@ export default function Login() {
 
     return (
         <>
+            {errors.googleError && (
+                <div role="alert" className="alert alert-error alert-soft">
+                    <span>{errors.googleError}</span>
+                </div>
+            )}
             <div className="hero bg-base-200 min-h-screen">
                 <div className="hero-content w-full flex-col lg:flex-row">
                     <div className="hidden md:block text-center w-1/3 lg:text-left">

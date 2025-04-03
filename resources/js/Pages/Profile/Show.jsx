@@ -26,8 +26,16 @@ export default function Show({ user }) {
                     <table className="table w-full border-collapse">
                         <tbody>
                             <tr className="border-b">
-                                <th className="p-3 text-left w-1/3">Name</th>
-                                <td className="p-3">{user?.name}</td>
+                                <th className="p-3 text-left w-1/3">
+                                    First Name
+                                </th>
+                                <td className="p-3">{user?.first_name}</td>
+                            </tr>
+                            <tr className="border-b">
+                                <th className="p-3 text-left w-1/3">
+                                    First Name
+                                </th>
+                                <td className="p-3">{user?.last_name}</td>
                             </tr>
                             <tr className="border-b">
                                 <th className="p-3 text-left w-1/3">

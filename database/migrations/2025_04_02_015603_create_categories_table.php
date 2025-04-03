@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Portfolio;
-use App\Models\Tag;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('portfolio_tags', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Portfolio::class);
-            $table->foreignIdFor(Tag::class);
+            $table->string('name');
+            $table->string('slug')->unique();
         });
     }
 
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('portfolio_tags');
+        Schema::dropIfExists('categories');
     }
 };

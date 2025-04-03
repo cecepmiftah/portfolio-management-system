@@ -12,17 +12,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('portfolios', function (Blueprint $table) {
+        Schema::create('work_experiences', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
-            $table->string('title');
+            $table->string('company');
+            $table->string('position');
             $table->string('description')->nullable();
-            $table->string('slug')->unique();
-            $table->string('project_url')->nullable();
-            $table->date('project_date');
-            $table->json('content');
-            $table->string('thumbnail')->nullable();
-
+            $table->date('start_date');
+            $table->date('end_date')->nullable();
+            $table->boolean('is_current')->default(false);
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('portfolios');
+        Schema::dropIfExists('work_experiences');
     }
 };

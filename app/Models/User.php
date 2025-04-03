@@ -18,15 +18,18 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'username',
-        'email',
-        'google_id',
-        'avatar',
-        'provider',
-        'password',
-    ];
+    // protected $fillable = [
+    //     'name',
+    //     'username',
+    //     'email',
+    //     'description',
+    //     'google_id',
+    //     'avatar',
+    //     'provider',
+    //     'password',
+    // ];
+
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -54,6 +57,11 @@ class User extends Authenticatable
     public function portfolios()
     {
         return $this->hasMany(Portfolio::class);
+    }
+
+    public function workExperiences()
+    {
+        return $this->hasMany(WorkExperience::class)->orderBy('start_date', 'desc');
     }
 
     public function likes()

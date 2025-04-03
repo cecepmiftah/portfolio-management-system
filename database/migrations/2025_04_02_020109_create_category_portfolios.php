@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Category;
 use App\Models\Portfolio;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -12,13 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('medias', function (Blueprint $table) {
+        Schema::create('category_portfolios', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Portfolio::class);
-            $table->string('file_path');
-            $table->string('file_type');
-            $table->string('alt_text')->nullable();
-            $table->timestamps();
+            $table->foreignIdFor(Category::class);
         });
     }
 
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('media');
+        Schema::dropIfExists('category_portfolios');
     }
 };

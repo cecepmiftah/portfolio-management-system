@@ -82,7 +82,7 @@ export default function Header() {
                             <Link href="#">Home</Link>
                         </li>
                         <li>
-                            <Link href="#">Your Portfolio</Link>
+                            <Link href="/portfolios">Portfolios</Link>
                         </li>
                         {!auth.user && (
                             <>
@@ -128,7 +128,7 @@ export default function Header() {
                         <Link href="#">Home</Link>
                     </li>
                     <li>
-                        <Link href="#">Your Portfolio</Link>
+                        <Link href="/portfolios">Portfolios</Link>
                     </li>
                     {!auth.user && (
                         <>

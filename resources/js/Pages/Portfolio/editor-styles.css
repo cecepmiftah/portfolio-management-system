@@ -1,0 +1,40 @@
+.tiptap {
+    min-height: 300px;
+}
+
+.tiptap p {
+    margin: 0.5rem 0;
+}
+
+.tiptap h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.5rem;
+}
+
+.tiptap h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 1.2rem 0 0.5rem;
+}
+
+/* Table styling */
+.tiptap table {
+    border: 1px solid #e5e7eb;
+}
+
+.tiptap th,
+.tiptap td {
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem;
+}
+
+/* Dark mode support */
+.dark .tiptap table {
+    border-color: #374151;
+}
+
+.dark .tiptap th,
+.dark .tiptap td {
+    border-color: #374151;
+}

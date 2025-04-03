@@ -13,9 +13,9 @@ class Portfolio extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function tags()
+    public function categories()
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsToMany(Category::class, 'category_portfolios');
     }
 
     public function medias()

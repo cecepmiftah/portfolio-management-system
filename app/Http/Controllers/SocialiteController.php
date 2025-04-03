@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteController extends Controller
@@ -23,6 +23,7 @@ class SocialiteController extends Controller
             $user = User::where('google_id', $googleUser->id)
                 ->orWhere('email', $googleUser->email)->first();
 
+
             if (! $user) {
                 $username = strtolower(str_replace(' ', '', $googleUser->name));
 
@@ -30,8 +31,13 @@ class SocialiteController extends Controller
                     $username .= rand(1, 100);
                 }
 
+                $nameParts = explode(' ', $googleUser->getName(), 2);
+                $firstName = $nameParts[0];
+                $lastName = $nameParts[1] ?? '';
+
                 $user = User::create([
-                    'name' => $googleUser->name,
+                    'first_name' => $firstName ?? $googleUser->getName(),
+                    'last_name' => $lastName,
                     'username' => $username,
                     'email' => $googleUser->email,
                     'google_id' => $googleUser->id,
@@ -44,6 +50,15 @@ class SocialiteController extends Controller
 
             return to_route('/home');
         } catch (\Exception $e) {
+
+            Log::error('Google login failed', [
+                'error' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString(),
+                'request_ip' => request()->ip(),
+                'request_data' => request()->all(),
+                'time' => now()->toDateTimeString(),
+            ]);
+
             return redirect('/login')->withErrors(['googleError', 'Error Saat mencoba login dengan google']);
         }
     }
