@@ -1,5 +1,6 @@
 import { Link, router, usePage } from "@inertiajs/react";
 import avatarImg from "../../img/person.png";
+import ThemeController from "./ThemeController";
 
 export default function Header() {
     const { auth } = usePage().props;
@@ -58,25 +59,32 @@ export default function Header() {
                     ></label>
                     <ul className="menu gap-3 p-4 w-64 min-h-full bg-base-200 text-base-content">
                         {auth.user && (
-                            <li>
-                                <div className="flex items-center">
-                                    <div
-                                        tabIndex={0}
-                                        role="button"
-                                        className="btn btn-ghost btn-circle avatar"
-                                    >
-                                        <div className="w-10 rounded-full">
-                                            <img
-                                                alt="Tailwind CSS Navbar component"
-                                                src={avatar}
-                                            />
+                            <>
+                                <li>
+                                    <div className="flex items-center">
+                                        <div
+                                            tabIndex={0}
+                                            role="button"
+                                            className="btn btn-ghost btn-circle avatar"
+                                        >
+                                            <div className="w-10 rounded-full">
+                                                <img
+                                                    alt="Tailwind CSS Navbar component"
+                                                    src={avatar}
+                                                />
+                                            </div>
                                         </div>
+                                        <Link href={`/user/${auth.user.id}`}>
+                                            {auth.user.name}
+                                        </Link>
                                     </div>
-                                    <Link href={`/user/${auth.user.id}`}>
-                                        {auth.user.name}
+                                </li>
+                                <li>
+                                    <Link href="/portfolios/create">
+                                        Upload Portfolio
                                     </Link>
-                                </div>
-                            </li>
+                                </li>
+                            </>
                         )}
                         <li>
                             <Link href="#">Home</Link>
@@ -152,39 +160,49 @@ export default function Header() {
                         </>
                     )}
                     {auth.user && (
-                        <div className="dropdown dropdown-end mx-2">
-                            <div
-                                tabIndex={0}
-                                role="button"
-                                className="btn btn-ghost btn-circle avatar"
-                            >
-                                <div className="w-10 rounded-full">
-                                    <img
-                                        alt="Tailwind CSS Navbar component"
-                                        src={avatar}
-                                    />
+                        <>
+                            <li>
+                                <Link href="/portfolios/create">
+                                    Upload Portfolio
+                                </Link>
+                            </li>
+                            <li className="">
+                                <ThemeController />
+                            </li>
+                            <div className="dropdown dropdown-end">
+                                <div
+                                    tabIndex={0}
+                                    role="button"
+                                    className="btn btn-ghost btn-circle avatar"
+                                >
+                                    <div className="w-10 rounded-full">
+                                        <img
+                                            alt="Tailwind CSS Navbar component"
+                                            src={avatar}
+                                        />
+                                    </div>
                                 </div>
+                                <ul
+                                    tabIndex={0}
+                                    className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+                                >
+                                    <li>
+                                        <Link
+                                            href={`/user/${auth.user.id}`}
+                                            className="justify-between"
+                                        >
+                                            Profile
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link>Settings</Link>
+                                    </li>
+                                    <li>
+                                        <button onClick={logout}>Logout</button>
+                                    </li>
+                                </ul>
                             </div>
-                            <ul
-                                tabIndex={0}
-                                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-                            >
-                                <li>
-                                    <Link
-                                        href={`/user/${auth.user.id}`}
-                                        className="justify-between"
-                                    >
-                                        Profile
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link>Settings</Link>
-                                </li>
-                                <li>
-                                    <button onClick={logout}>Logout</button>
-                                </li>
-                            </ul>
-                        </div>
+                        </>
                     )}
                 </ul>
             </div>

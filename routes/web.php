@@ -33,6 +33,9 @@ Route::resource('user', ProfileController::class)->middleware('auth')->except(['
 
 Route::controller(PortfolioController::class)->group(function () {
     Route::get('/portfolios', 'index')->name('portfolios.index');
+    Route::post('/portfolios', 'store')->name('portfolios.store');
     Route::get('/portfolios/create', 'create')->name('portfolios.create');
     Route::get('/portfolios/{id}', 'show')->name('portfolios.show');
+
+    Route::post('/upload-image', 'uploadImage')->name('upload.image');
 });

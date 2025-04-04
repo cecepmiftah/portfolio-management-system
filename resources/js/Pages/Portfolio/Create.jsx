@@ -47,15 +47,24 @@ const ALL_EXTENSIONS = [
     FontSize,
     Heading,
     Image.configure({
-        HTMLAttributes: {
-            class: "rounded-lg mx-auto",
-        },
-        upload: (files) => {
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve(URL.createObjectURL(files));
-                }, 500);
+        allowBase64: false,
+        upload: async (file) => {
+            const formData = new FormData();
+            formData.append("image", file);
+
+            const response = await fetch("/upload-image", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute("content"),
+                },
+                body: formData,
             });
+
+            const result = await response.json();
+            console.log(result);
+            return result.url; // Kembalikan URL dari backend
         },
     }),
 ];
