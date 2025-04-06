@@ -1,7 +1,7 @@
 import Search from "@/Components/Search";
 import PortfolioCard from "@/Components/PortfolioCard";
 
-export default function index() {
+export default function index({ portfolios }) {
     return (
         <div className="max-w-full">
             <div className="">
@@ -21,18 +21,12 @@ export default function index() {
                     <Search />
                 </div>
                 <div className="max-w-full my-6 mx-6 grid place-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-6">
-                    <PortfolioCard />
-                    <PortfolioCard />
-                    <PortfolioCard />
-                    <PortfolioCard />
-                    <PortfolioCard />
-                    <PortfolioCard />
-                    <PortfolioCard />
-                    <PortfolioCard />
-                    <PortfolioCard />
-                    <PortfolioCard />
-                    <PortfolioCard />
-                    <PortfolioCard />
+                    {portfolios.map((portfolio) => (
+                        <PortfolioCard
+                            key={portfolio.id}
+                            portfolio={portfolio}
+                        />
+                    ))}
                 </div>
             </div>
         </div>

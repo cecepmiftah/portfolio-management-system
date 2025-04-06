@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PortfolioController extends Controller implements HasMiddleware
 {
@@ -23,7 +24,9 @@ class PortfolioController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        return inertia('Portfolio/Index');
+        return inertia('Portfolio/Index', [
+            'portfolios' => Portfolio::with('user')->latest()->get(),
+        ]);
     }
 
     /**
@@ -53,16 +56,48 @@ class PortfolioController extends Controller implements HasMiddleware
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'description' => 'nullable',
+            'content' => 'required',
+            'thumbnail' => 'required|image|max:2048',
+        ]);
+
+        // Store the thumbnail image
+        $thumbnailPath = $request->file('thumbnail')->store('portfolios-thumbnails', 'public');
+
+        $slug = Str::slug($request->title);
+
+        $searchSlug = Portfolio::where('slug', Str::slug($request->title))->first();
+
+        if ($searchSlug) {
+            $slug = $slug . '-' . time();
+        }
+
+        $portfolio = Portfolio::create([
+            'user_id' => auth()->user()->id,
+            'title' => $request->title,
+            'description' => $request->description,
+            'slug' => $slug,
+            'content' => json_encode($request->content),
+            'thumbnail' => Storage::url($thumbnailPath),
+        ]);
+
+        return redirect()->route('portfolios.index')->with('success', 'Portfolio created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Portfolio $portfolio)
     {
+        $content = json_decode($portfolio->content);
 
-        return inertia('Portfolio/Show');
+        return inertia('Portfolio/Show', [
+            'portfolio' => $portfolio,
+            'content' => $content,
+
+        ]);
     }
 
     /**

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('slug')->unique();
             $table->string('project_url')->nullable();
-            $table->date('project_date');
+            $table->date('project_date')->nullable();
             $table->json('content');
             $table->string('thumbnail')->nullable();
 

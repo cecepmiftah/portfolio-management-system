@@ -1,40 +1,36 @@
-import { useForm, usePage } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import { useRef, useState } from "react";
 import avatarImg from "../../../img/person.png";
 
 export default function Edit({ user }) {
-    const fileInputRef = useRef(null);
     const { flash } = usePage().props;
 
     const [message, setMessage] = useState(flash.message);
+    const [preview, setPreview] = useState(user.avatar ?? avatarImg);
+    const [loadingImage, setLoadingImage] = useState(false);
+    const fileInput = useRef(null);
 
-    const { data, setData, patch, post, processing, errors } = useForm({
-        name: user.name,
+    const { data, setData, patch, processing, errors } = useForm({
+        first_name: user.first_name,
+        last_name: user.last_name || "",
         username: user.username,
         email: user.email,
-        avatar: null,
+        about: user.about || "",
+        occupation: user.occupation || "",
+        company: user.company || "",
+        location: user.location || "",
+        city: user.city || "",
+        website: user.website || "",
     });
 
-    const handleAvatarClick = () => {
-        fileInputRef.current.click();
-    };
-
-    let avatar = "";
-    if (user.avatar !== null && user?.avatar.startsWith("http")) {
-        avatar = user.avatar;
-    } else if (user?.avatar !== null) {
-        avatar = `/storage/${user.avatar}`;
-    } else if (user?.avatar === null) {
-        avatar = avatarImg;
-    }
-
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0];
         if (file) {
+            setLoadingImage(true);
             const formData = new FormData();
             formData.append("avatar", file);
 
-            fetch(`/user/avatar/${user.id}`, {
+            fetch(`/user/avatar/${user.username}`, {
                 method: "POST",
                 body: formData,
                 headers: {
@@ -42,167 +38,287 @@ export default function Edit({ user }) {
                         .querySelector('meta[name="csrf-token"]')
                         .getAttribute("content"),
                 },
-            }).then(() => {
-                window.location.reload();
-            });
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    setPreview(data.avatar);
+
+                    setLoadingImage(false);
+                });
         }
     };
 
-    function submit(e) {
+    const submit = (e) => {
         e.preventDefault();
 
-        patch(`/user/${user.id}`, {
+        patch(`/user/${user.username}`, {
+            preserveScroll: true,
             onSuccess: (page) => {
                 setMessage(page.props.flash.message);
             },
         });
-    }
+    };
 
     return (
-        <>
+        <div className="max-w-4xl mx-auto py-8 px-4">
+            <Head title="Edit Profile" />
+
+            <h1 className="text-3xl font-bold mb-8">Edit Profile</h1>
+
             {message && (
-                <div role="alert" className="alert alert-success mx-6 my-4">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 shrink-0 stroke-current"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                    </svg>
+                <div
+                    role="alert"
+                    className="alert alert-success alert-soft mb-4"
+                >
                     <span>{message}</span>
                 </div>
             )}
+
             {errors.error && (
-                <div
-                    role="alert"
-                    className="alert alert-error alert-soft mx-6 my-4"
-                >
+                <div role="alert" className="alert alert-error alert-soft mb-4">
                     <span>{errors.error}</span>
                 </div>
             )}
-            <div className="w-full flex justify-center">
-                <fieldset className="fieldset w-1/2 bg-base-200 border border-base-300 p-4 rounded-box">
-                    <div className="p-6 text-center border-b">
+
+            <div className="card bg-base-100 shadow-lg">
+                <div className="card-body">
+                    {/* Avatar Upload */}
+                    <div className="flex flex-col items-center mb-8">
+                        <div className="avatar mb-4">
+                            <div className="w-32 h-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                                <img
+                                    src={preview}
+                                    alt="Profile"
+                                    className="object-cover"
+                                />
+                            </div>
+                        </div>
                         <input
                             type="file"
-                            ref={fileInputRef}
+                            ref={fileInput}
+                            onChange={handleAvatarChange}
                             className="hidden"
-                            onChange={handleFileChange}
+                            accept="image/*"
                         />
-                        <img
-                            src={avatar}
-                            alt="Profile"
-                            className="w-24 h-24 rounded-full mx-auto border border-gray-300 cursor-pointer hover:opacity-75 transition object-cover"
-                            onClick={handleAvatarClick}
-                        />
-                    </div>
-
-                    <legend className="fieldset-legend">Profile Edit</legend>
-                    <form onSubmit={submit} className="space-y-2 w-full">
-                        <label className="input w-full">
-                            <svg
-                                className="h-[1em] opacity-50"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                            >
-                                <g
-                                    strokeLinejoin="round"
-                                    strokeLinecap="round"
-                                    strokeWidth="2.5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                >
-                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </g>
-                            </svg>
-                            <input
-                                type="input"
-                                required
-                                placeholder="Name"
-                                value={data.name}
-                                onChange={(e) =>
-                                    setData("name", e.target.value)
-                                }
-                            />
-                        </label>
-                        <label className="input w-full">
-                            <svg
-                                className="h-[1em] opacity-50"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                            >
-                                <g
-                                    strokeLinejoin="round"
-                                    strokeLinecap="round"
-                                    strokeWidth="2.5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                >
-                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </g>
-                            </svg>
-                            <input
-                                type="input"
-                                required
-                                placeholder="Username"
-                                value={data.username}
-                                onChange={(e) =>
-                                    setData("username", e.target.value)
-                                }
-                            />
-                        </label>
-                        <label className="input w-full">
-                            <svg
-                                className="h-[1em] opacity-50"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                            >
-                                <g
-                                    strokeLinejoin="round"
-                                    strokeLinecap="round"
-                                    strokeWidth="2.5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                >
-                                    <rect
-                                        width="20"
-                                        height="16"
-                                        x="2"
-                                        y="4"
-                                        rx="2"
-                                    ></rect>
-                                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                                </g>
-                            </svg>
-                            <input
-                                type="email"
-                                placeholder="mail@site.com"
-                                required
-                                value={data.email}
-                                onChange={(e) =>
-                                    setData("email", e.target.value)
-                                }
-                            />
-                        </label>
-
                         <button
-                            type="submit"
-                            className="btn btn-sm btn-primary mt-4 w-full"
-                            disabled={processing}
+                            type="button"
+                            onClick={() => fileInput.current.click()}
+                            className="btn btn-sm btn-outline"
+                            disabled={loadingImage}
                         >
-                            Update
+                            {loadingImage ? (
+                                <span className="loading loading-spinner"></span>
+                            ) : (
+                                "Change Avatar"
+                            )}
                         </button>
+                        {errors.avatar && (
+                            <div className="text-error mt-2">
+                                {errors.avatar}
+                            </div>
+                        )}
+                    </div>
+                    <form onSubmit={submit} encType="multipart/form-data">
+                        {/* Form Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* First Name */}
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">
+                                        First Name
+                                    </span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={data.first_name}
+                                    onChange={(e) =>
+                                        setData("first_name", e.target.value)
+                                    }
+                                    className={`input input-bordered ${
+                                        errors.first_name ? "input-error" : ""
+                                    }`}
+                                />
+                                {errors.first_name && (
+                                    <label className="label">
+                                        <span className="label-text-alt text-error">
+                                            {errors.first_name}
+                                        </span>
+                                    </label>
+                                )}
+                            </div>
+
+                            {/* Last Name */}
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">
+                                        Last Name
+                                    </span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={data.last_name}
+                                    onChange={(e) =>
+                                        setData("last_name", e.target.value)
+                                    }
+                                    className="input input-bordered"
+                                />
+                            </div>
+
+                            {/* Username */}
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Username</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={data.username}
+                                    onChange={(e) =>
+                                        setData("username", e.target.value)
+                                    }
+                                    className={`input input-bordered ${
+                                        errors.username ? "input-error" : ""
+                                    }`}
+                                />
+                                {errors.username && (
+                                    <label className="label">
+                                        <span className="label-text-alt text-error">
+                                            {errors.username}
+                                        </span>
+                                    </label>
+                                )}
+                            </div>
+
+                            {/* Email */}
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Email</span>
+                                </label>
+                                <input
+                                    type="email"
+                                    value={data.email}
+                                    onChange={(e) =>
+                                        setData("email", e.target.value)
+                                    }
+                                    className={`input input-bordered ${
+                                        errors.email ? "input-error" : ""
+                                    }`}
+                                />
+                                {errors.email && (
+                                    <label className="label">
+                                        <span className="label-text-alt text-error">
+                                            {errors.email}
+                                        </span>
+                                    </label>
+                                )}
+                            </div>
+
+                            {/* Occupation */}
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">
+                                        Occupation
+                                    </span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={data.occupation}
+                                    onChange={(e) =>
+                                        setData("occupation", e.target.value)
+                                    }
+                                    className="input input-bordered"
+                                />
+                            </div>
+
+                            {/* Company */}
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Company</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={data.company}
+                                    onChange={(e) =>
+                                        setData("company", e.target.value)
+                                    }
+                                    className="input input-bordered"
+                                />
+                            </div>
+
+                            {/* Location */}
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">Location</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={data.location}
+                                    onChange={(e) =>
+                                        setData("location", e.target.value)
+                                    }
+                                    className="input input-bordered"
+                                />
+                            </div>
+
+                            {/* City */}
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text">City</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={data.city}
+                                    onChange={(e) =>
+                                        setData("city", e.target.value)
+                                    }
+                                    className="input input-bordered"
+                                />
+                            </div>
+
+                            {/* Website */}
+                            <div className="form-control md:col-span-2">
+                                <label className="label">
+                                    <span className="label-text">Website</span>
+                                </label>
+                                <input
+                                    type="url"
+                                    value={data.website}
+                                    onChange={(e) =>
+                                        setData("website", e.target.value)
+                                    }
+                                    className="input input-bordered"
+                                    placeholder="https://example.com"
+                                />
+                            </div>
+
+                            {/* About */}
+                            <div className="form-control md:col-span-2">
+                                <label className="label">
+                                    <span className="label-text">About</span>
+                                </label>
+                                <textarea
+                                    value={data.about}
+                                    onChange={(e) =>
+                                        setData("about", e.target.value)
+                                    }
+                                    className="textarea textarea-bordered h-32"
+                                    placeholder="Tell us about yourself..."
+                                ></textarea>
+                            </div>
+                        </div>
+
+                        {/* Submit Button */}
+                        <div className="mt-8 flex justify-end">
+                            <button
+                                type="submit"
+                                className="btn btn-primary"
+                                disabled={processing}
+                            >
+                                {processing ? "Saving..." : "Save Changes"}
+                            </button>
+                        </div>
                     </form>
-                </fieldset>
+                </div>
             </div>
-        </>
+        </div>
     );
 }

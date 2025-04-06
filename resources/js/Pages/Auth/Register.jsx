@@ -9,8 +9,6 @@ export default function Register() {
         password_confirmation: "",
     });
 
-    console.log(errors);
-
     transform((data) => ({
         ...data,
         username: data.username.toLowerCase(),

@@ -3,25 +3,27 @@ import TooltipProfile from "./CardComponents/TooltipProfile";
 import LikeButton from "./CardComponents/LikeButton";
 import ViewCount from "./CardComponents/ViewCount";
 
-export default function PortfolioCard() {
+export default function PortfolioCard({ portfolio }) {
     return (
         <div className="card w-80 bg-base-100 shadow-xl group">
             <figure className="relative overflow-hidden h-64">
                 {/* Gambar yang bisa diklik ke halaman detail */}
-                <Link href={`/portfolios/${1}`}>
+                <Link href={`/portfolios/${portfolio.slug}`}>
                     <img
-                        src="https://placehold.co/600x400"
-                        alt="Gambar"
+                        src={portfolio.thumbnail}
+                        alt="Thumbnail"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
 
                     {/* Overlay yang muncul saat hover */}
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
                         <h3 className="text-xl font-bold text-white mb-2">
-                            Judul Hover
+                            {portfolio.title}
                         </h3>
                         <p className="text-gray-300">
-                            Deskripsi yang muncul dari bawah saat hover
+                            {portfolio.description.length > 100
+                                ? `${portfolio.description.slice(0, 100)}...`
+                                : portfolio.description}
                         </p>
                     </div>
                 </Link>
@@ -32,7 +34,7 @@ export default function PortfolioCard() {
                     {/* Bagian owner yang bisa diklik ke profile */}
                     <div className="flex items-center space-x-2">
                         <Link
-                            href="/profile-owner"
+                            href={`/user/${portfolio.user.username}`}
                             className="card-title text-sm hover:text-primary transition-colors duration-200 relative group/owner"
                         >
                             <div className="avatar">
@@ -43,9 +45,9 @@ export default function PortfolioCard() {
                                     />
                                 </div>
                             </div>
-                            John Doe
+                            {portfolio.user.username}
                             {/* Tooltip profile owner yang muncul saat hover */}
-                            <TooltipProfile />
+                            <TooltipProfile user={portfolio.user} />
                         </Link>
                     </div>
 

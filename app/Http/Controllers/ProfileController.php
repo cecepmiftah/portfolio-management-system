@@ -14,12 +14,15 @@ class ProfileController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware(['auth', 'can:update,user'])
+            new Middleware(['auth', 'can:update,user'], ['edit', 'update', 'updateAvatar']),
         ];
     }
 
     public function show(User $user)
     {
+        $user->load([
+            'portfolios'
+        ]);
         return inertia('Profile/Show', [
             'user' => $user
         ]);
@@ -34,17 +37,23 @@ class ProfileController extends Controller implements HasMiddleware
 
     public function update(User $user, Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|lowercase',
-            'email' => 'required|string|email|max:255',
+        $user = auth()->user();
+
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:50',
+            'last_name' => 'nullable|string|max:50',
+            'username' => 'required|string|alpha_dash|max:30|unique:users,username,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'about' => 'nullable|string|max:500',
+            'occupation' => 'nullable|string|max:100',
+            'company' => 'nullable|string|max:100',
+            'location' => 'nullable|string|max:100',
+            'city' => 'nullable|string|max:100',
+            'website' => 'nullable|url|max:255',
         ]);
 
-        $user->fill([
-            'name' => $request->name,
-            'username' => $request->username,
-            'email' => $request->email,
-        ]);
+
+        $user->fill($validated);
 
         if ($user->isDirty()) {
             $user->save();
@@ -71,9 +80,12 @@ class ProfileController extends Controller implements HasMiddleware
             }
 
             $avatarPath = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = $avatarPath;
+            $user->avatar = Storage::url($avatarPath);
             $user->save();
-            return back()->with('success', 'Avatar updated successfully');
+            return response()->json([
+                'avatar' => $user->avatar,
+                'message' => 'Avatar updated successfully'
+            ]);
         } else {
 
             return back()->withErrors(['error' => 'Failed to update avatar']);

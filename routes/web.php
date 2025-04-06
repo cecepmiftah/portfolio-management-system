@@ -26,16 +26,22 @@ Route::get('auth/google', [SocialiteController::class, 'redirectToGoogle'])->nam
 Route::get('auth/google-callback', [SocialiteController::class, 'handleGoogleCallback']);
 
 
-Route::post('user/avatar/{user}', [ProfileController::class, 'updateAvatar'])->name('user.avatar.update');
+Route::post('user/avatar/{user:username}', [ProfileController::class, 'updateAvatar'])->name('user.avatar.update');
 
 
-Route::resource('user', ProfileController::class)->middleware('auth')->except(['create', 'store', 'index']);
+// Route::resource('user', ProfileController::class)->middleware('auth')->except(['create', 'store', 'index']);
+
+Route::controller(ProfileController::class)->group(function () {
+    Route::get('/user/{user:username}', 'show')->name('user.show');
+    Route::get('/user/{user:username}/edit', 'edit')->name('user.edit');
+    Route::patch('/user/{user:username}', 'update')->name('user.update');
+});
 
 Route::controller(PortfolioController::class)->group(function () {
     Route::get('/portfolios', 'index')->name('portfolios.index');
     Route::post('/portfolios', 'store')->name('portfolios.store');
     Route::get('/portfolios/create', 'create')->name('portfolios.create');
-    Route::get('/portfolios/{id}', 'show')->name('portfolios.show');
+    Route::get('/portfolios/{portfolio:slug}', 'show')->name('portfolios.show');
 
     Route::post('/upload-image', 'uploadImage')->name('upload.image');
 });

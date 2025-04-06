@@ -11,19 +11,6 @@ export default function Header() {
         router.post("/logout");
     }
 
-    let avatar = "";
-    if (
-        auth.user !== null &&
-        auth.user.avatar !== null &&
-        auth.user.avatar.startsWith("http")
-    ) {
-        avatar = auth.user.avatar;
-    } else if (auth.user !== null && auth.user.avatar !== null) {
-        avatar = `/storage/${auth.user.avatar}`;
-    } else {
-        avatar = avatarImg;
-    }
-
     return (
         <div className="navbar bg-base-100 shadow-sm">
             <div className="drawer lg:hidden z-10">
@@ -70,11 +57,16 @@ export default function Header() {
                                             <div className="w-10 rounded-full">
                                                 <img
                                                     alt="Tailwind CSS Navbar component"
-                                                    src={avatar}
+                                                    src={
+                                                        auth.user.avatar ??
+                                                        avatarImg
+                                                    }
                                                 />
                                             </div>
                                         </div>
-                                        <Link href={`/user/${auth.user.id}`}>
+                                        <Link
+                                            href={`/user/${auth.user.username}`}
+                                        >
                                             {auth.user.name}
                                         </Link>
                                     </div>
@@ -178,7 +170,7 @@ export default function Header() {
                                     <div className="w-10 rounded-full">
                                         <img
                                             alt="Tailwind CSS Navbar component"
-                                            src={avatar}
+                                            src={auth.user.avatar ?? avatarImg}
                                         />
                                     </div>
                                 </div>
@@ -188,7 +180,7 @@ export default function Header() {
                                 >
                                     <li>
                                         <Link
-                                            href={`/user/${auth.user.id}`}
+                                            href={`/user/${auth.user.username}`}
                                             className="justify-between"
                                         >
                                             Profile
