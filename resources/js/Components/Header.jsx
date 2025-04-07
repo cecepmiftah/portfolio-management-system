@@ -1,203 +1,357 @@
 import { Link, router, usePage } from "@inertiajs/react";
 import avatarImg from "../../img/person.png";
 import ThemeController from "./ThemeController";
+import { useEffect, useState } from "react";
 
 export default function Header() {
     const { auth } = usePage().props;
-
+    const [scrolled, setScrolled] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     function logout(e) {
         e.preventDefault();
 
         router.post("/logout");
     }
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 10);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     return (
-        <div className="navbar bg-base-100 shadow-sm">
-            <div className="drawer lg:hidden z-10">
-                <input
-                    id="mobile-menu"
-                    type="checkbox"
-                    className="drawer-toggle"
-                />
-                <div className="drawer-content flex items-center">
-                    <label
-                        htmlFor="mobile-menu"
-                        className="btn btn-square btn-ghost drawer-button lg:hidden"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            className="inline-block h-5 w-5 stroke-current"
+        <>
+            {/* Header */}
+            <header
+                className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+                    scrolled
+                        ? "bg-base-100/90 backdrop-blur-md shadow-lg"
+                        : "bg-base-100 shadow-sm"
+                }`}
+            >
+                <div className="navbar max-w-7xl mx-auto px-4">
+                    {/* Mobile Menu Button */}
+                    <div className="lg:hidden">
+                        <label
+                            htmlFor="mobile-menu"
+                            className="btn btn-square btn-ghost"
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M4 6h16M4 12h16M4 18h16"
-                            ></path>
-                        </svg>
-                    </label>
-                </div>
-                <div className="drawer-side">
-                    <label
-                        htmlFor="mobile-menu"
-                        className="drawer-overlay"
-                    ></label>
-                    <ul className="menu gap-3 p-4 w-64 min-h-full bg-base-200 text-base-content">
-                        {auth.user && (
-                            <>
-                                <li>
-                                    <div className="flex items-center">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                className="inline-block h-5 w-5 stroke-current"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M4 6h16M4 12h16M4 18h16"
+                                />
+                            </svg>
+                        </label>
+                    </div>
+
+                    {/* Logo/Brand */}
+                    <div className="flex-1">
+                        <Link
+                            href="/"
+                            className="btn btn-ghost text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
+                        >
+                            FolioSnap
+                        </Link>
+                    </div>
+
+                    {/* Desktop Navigation */}
+                    <nav className="hidden lg:flex gap-2">
+                        <ul className="menu menu-horizontal px-1 font-medium items-center gap-x-4">
+                            <li>
+                                <Link
+                                    href="/"
+                                    className="hover:text-primary transition-colors"
+                                >
+                                    Home
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/portfolios"
+                                    className="hover:text-primary transition-colors"
+                                >
+                                    Explore
+                                </Link>
+                            </li>
+
+                            {auth.user ? (
+                                <>
+                                    <li>
+                                        <Link
+                                            href="/portfolios/create"
+                                            className="btn btn-primary btn-sm rounded-full px-6 hover:shadow-lg transition-all"
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-4 w-4 mr-1"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M12 4v16m8-8H4"
+                                                />
+                                            </svg>
+                                            Upload
+                                        </Link>
+                                    </li>
+
+                                    <li className="dropdown dropdown-end">
                                         <div
                                             tabIndex={0}
-                                            role="button"
-                                            className="btn btn-ghost btn-circle avatar"
+                                            className="avatar online"
                                         >
-                                            <div className="w-10 rounded-full">
+                                            <div className="w-10 rounded-full ring-2 ring-primary ring-offset-base-100 ring-offset-2 hover:ring-accent transition-all">
                                                 <img
-                                                    alt="Tailwind CSS Navbar component"
                                                     src={
-                                                        auth.user.avatar ??
-                                                        avatarImg
+                                                        auth.user.avatar ||
+                                                        "/default-avatar.jpg"
                                                     }
+                                                    alt={auth.user.name}
                                                 />
                                             </div>
                                         </div>
-                                        <Link
-                                            href={`/user/${auth.user.username}`}
+                                        <ul
+                                            tabIndex={0}
+                                            className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 mt-4"
                                         >
-                                            {auth.user.name}
+                                            <li>
+                                                <Link
+                                                    href={`/user/${auth.user.username}`}
+                                                    className="hover:text-primary"
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className="h-5 w-5"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                                        />
+                                                    </svg>
+                                                    Profile
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link
+                                                    href="/settings"
+                                                    className="hover:text-primary"
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className="h-5 w-5"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                                                        />
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                                        />
+                                                    </svg>
+                                                    Settings
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <button
+                                                    onClick={logout}
+                                                    className="text-error hover:bg-error/10"
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className="h-5 w-5"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                                                        />
+                                                    </svg>
+                                                    Logout
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </>
+                            ) : (
+                                <>
+                                    <li>
+                                        <Link
+                                            href="/login"
+                                            className="btn btn-ghost btn-sm rounded-full hover:bg-base-200 transition-all"
+                                        >
+                                            Log In
                                         </Link>
-                                    </div>
-                                </li>
-                                <li>
-                                    <Link href="/portfolios/create">
-                                        Upload Portfolio
-                                    </Link>
-                                </li>
-                            </>
-                        )}
-                        <li>
-                            <Link href="#">Home</Link>
-                        </li>
-                        <li>
-                            <Link href="/portfolios">Portfolios</Link>
-                        </li>
-                        {!auth.user && (
-                            <>
-                                <li>
-                                    <Link>Settings</Link>
-                                </li>
-                                <li>
-                                    <Link
-                                        href="/register"
-                                        className="btn btn-sm btn-primary"
-                                    >
-                                        Sign Up
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link
-                                        href="/login"
-                                        className="btn btn-sm btn-outline btn-secondary"
-                                    >
-                                        Log In
-                                    </Link>
-                                </li>
-                            </>
-                        )}
-                        {auth.user && (
-                            <li>
-                                <button onClick={logout}>Logout</button>
-                            </li>
-                        )}
-                    </ul>
+                                    </li>
+                                    <li>
+                                        <Link
+                                            href="/register"
+                                            className="btn btn-primary btn-sm rounded-full px-6 hover:shadow-lg transition-all"
+                                        >
+                                            Sign Up
+                                        </Link>
+                                    </li>
+                                </>
+                            )}
+                        </ul>
+                    </nav>
                 </div>
-            </div>
+            </header>
 
-            <div className="flex-1">
-                <Link href="/" className="btn btn-ghost text-xl">
-                    FolioSnap
-                </Link>
-            </div>
-
-            <div className="flex gap-2">
-                <ul className="hidden lg:flex menu menu-horizontal px-1 font-light items-center gap-x-3">
-                    <li>
-                        <Link href="#">Home</Link>
-                    </li>
-                    <li>
-                        <Link href="/portfolios">Portfolios</Link>
-                    </li>
-                    {!auth.user && (
-                        <>
-                            <li>
-                                <Link
-                                    href="/register"
-                                    className="btn btn-sm btn-primary"
-                                >
-                                    Sign Up
-                                </Link>
-                            </li>
-
-                            <li>
-                                <Link
-                                    href="/login"
-                                    className="btn btn-sm btn-outline btn-secondary"
-                                >
-                                    Log In
-                                </Link>
-                            </li>
-                        </>
-                    )}
-                    {auth.user && (
-                        <>
-                            <li>
-                                <Link href="/portfolios/create">
-                                    Upload Portfolio
-                                </Link>
-                            </li>
-                            <li className="">
-                                <ThemeController />
-                            </li>
-                            <div className="dropdown dropdown-end">
-                                <div
-                                    tabIndex={0}
-                                    role="button"
-                                    className="btn btn-ghost btn-circle avatar"
-                                >
-                                    <div className="w-10 rounded-full">
+            {/* Mobile Menu */}
+            <div
+                className={`lg:hidden fixed inset-0 z-40 transition-all duration-300 ${
+                    mobileMenuOpen
+                        ? "visible opacity-100"
+                        : "invisible opacity-0"
+                }`}
+            >
+                <div
+                    className={`absolute inset-0 bg-black/50 transition-opacity ${
+                        mobileMenuOpen ? "opacity-100" : "opacity-0"
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                ></div>
+                <div
+                    className={`absolute left-0 top-0 h-full w-80 bg-base-100 shadow-xl transition-transform ${
+                        mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+                    }`}
+                >
+                    <div className="p-4">
+                        {auth.user && (
+                            <div className="flex items-center gap-4 mb-6 p-4 bg-base-200 rounded-lg">
+                                <div className="avatar online">
+                                    <div className="w-12 rounded-full">
                                         <img
-                                            alt="Tailwind CSS Navbar component"
-                                            src={auth.user.avatar ?? avatarImg}
+                                            src={
+                                                auth.user.avatar ||
+                                                "/default-avatar.jpg"
+                                            }
+                                            alt={auth.user.name}
                                         />
                                     </div>
                                 </div>
-                                <ul
-                                    tabIndex={0}
-                                    className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+                                <div>
+                                    <Link
+                                        href={`/user/${auth.user.username}`}
+                                        className="font-semibold hover:text-primary"
+                                    >
+                                        {auth.user.name}
+                                    </Link>
+                                    <p className="text-sm opacity-70">
+                                        @{auth.user.username}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        <ul className="menu gap-2">
+                            <li>
+                                <Link
+                                    href="/"
+                                    className="hover:text-primary hover:bg-base-200"
                                 >
+                                    Home
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/portfolios"
+                                    className="hover:text-primary hover:bg-base-200"
+                                >
+                                    Explore Portfolios
+                                </Link>
+                            </li>
+
+                            {auth.user && (
+                                <li>
+                                    <Link
+                                        href="/portfolios/create"
+                                        className="hover:text-primary hover:bg-base-200"
+                                    >
+                                        Upload Portfolio
+                                    </Link>
+                                </li>
+                            )}
+
+                            <div className="divider my-1"></div>
+
+                            {auth.user ? (
+                                <>
                                     <li>
                                         <Link
-                                            href={`/user/${auth.user.username}`}
-                                            className="justify-between"
+                                            href="/settings"
+                                            className="hover:text-primary hover:bg-base-200"
                                         >
-                                            Profile
+                                            Settings
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link>Settings</Link>
+                                        <button
+                                            onClick={logout}
+                                            className="text-error hover:bg-error/10"
+                                        >
+                                            Logout
+                                        </button>
+                                    </li>
+                                </>
+                            ) : (
+                                <>
+                                    <li>
+                                        <Link
+                                            href="/login"
+                                            className="btn btn-ghost btn-block justify-start hover:bg-base-200"
+                                        >
+                                            Log In
+                                        </Link>
                                     </li>
                                     <li>
-                                        <button onClick={logout}>Logout</button>
+                                        <Link
+                                            href="/register"
+                                            className="btn btn-primary btn-block justify-start"
+                                        >
+                                            Sign Up
+                                        </Link>
                                     </li>
-                                </ul>
-                            </div>
-                        </>
-                    )}
-                </ul>
+                                </>
+                            )}
+                        </ul>
+                    </div>
+                </div>
             </div>
-        </div>
+
+            {/* Spacer untuk konten di bawah fixed header */}
+            <div className="h-16"></div>
+        </>
     );
 }

@@ -16,3 +16,78 @@
 @plugin "daisyui" {
     themes: all;
 }
+
+@layer utilities {
+    /* Animasi untuk elemen mengambang */
+    .animate-float {
+        animation: float 10s ease-in-out infinite;
+    }
+
+    /* Animasi gradient teks */
+    .animate-text-gradient {
+        background-size: 300% 300%;
+        animation: text-gradient 6s ease infinite;
+    }
+
+    /* Animasi scroll indicator */
+    .animate-scroll-indicator {
+        animation: scroll-indicator 1.5s ease infinite;
+    }
+
+    /* Animasi fade-in dengan transform */
+    .animate-fade-in {
+        animation: fade-in 0.5s ease-out forwards;
+    }
+
+    /* Keyframes */
+    @keyframes float {
+        0%,
+        100% {
+            transform: translateY(0) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-20px) rotate(5deg);
+        }
+    }
+
+    @keyframes text-gradient {
+        0%,
+        100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    @keyframes scroll-indicator {
+        0% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(10px);
+            opacity: 0.5;
+        }
+    }
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .backdrop-blur-md {
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .bg-base-100\/90 {
+        background-color: hsl(var(--b1) / 0.9);
+    }
+}

@@ -101,12 +101,25 @@ const Create = memo(() => {
 
     return (
         <div className="p-4 max-w-5xl mx-auto">
-            {errors.upload ||
-                (message && (
-                    <div role="alert" className="alert alert-error alert-soft">
-                        <span>{errors.upload || message}</span>
-                    </div>
-                ))}
+            {/* Header Section */}
+            <div className="text-center mb-8">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2">
+                    Create Your Portfolio
+                </h1>
+                <p className="text-lg text-base-content/80">
+                    Showcase your work with a beautiful portfolio
+                </p>
+            </div>
+            {/* Notification */}
+            {(errors.upload || message) && (
+                <div
+                    className={`alert ${
+                        errors.upload ? "alert-error" : "alert-success"
+                    } mb-6 transition-all duration-300`}
+                >
+                    <span>{errors.upload || message}</span>
+                </div>
+            )}
             <Suspense fallback={<div>Loading...</div>}>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <label
@@ -227,15 +240,91 @@ const Create = memo(() => {
                         <p className="text-red-500">{errors.content}</p>
                     )}
 
-                    <button
-                        type="submit"
-                        className="btn btn-primary mt-4"
-                        disabled={processing}
-                    >
-                        Submit
-                    </button>
+                    {/* Additional Fields */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Project URL</span>
+                            </label>
+                            <input
+                                type="url"
+                                name="project_url"
+                                placeholder="https://example.com"
+                                className="input input-bordered"
+                                value={data.project_url}
+                                onChange={(e) =>
+                                    setData("project_url", e.target.value)
+                                }
+                            />
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Project Date</span>
+                            </label>
+                            <input
+                                type="date"
+                                name="project_date"
+                                className="input input-bordered"
+                                value={data.project_date}
+                                onChange={(e) =>
+                                    setData("project_date", e.target.value)
+                                }
+                            />
+                        </div>
+                    </div>
+
+                    {/* submit */}
+                    <div className="flex justify-end mt-8">
+                        <button
+                            type="submit"
+                            className={`btn btn-primary btn-wide ${
+                                processing ? "loading" : ""
+                            }`}
+                            disabled={processing}
+                        >
+                            {processing ? "Publishing..." : "Publish Portfolio"}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 ml-2"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z"
+                                    clipRule="evenodd"
+                                />
+                            </svg>
+                        </button>
+                    </div>
                 </form>
             </Suspense>
+            {/* Tips Section */}
+            <div className="mt-12 bg-base-200 rounded-box p-6">
+                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-info"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                    </svg>
+                    Portfolio Creation Tips
+                </h2>
+                <ul className="list-disc pl-5 space-y-2">
+                    <li>Use high-quality images for better presentation</li>
+                    <li>Write a clear and concise description</li>
+                    <li>Highlight your key contributions to the project</li>
+                    <li>Include relevant links (GitHub, live demo, etc.)</li>
+                </ul>
+            </div>
         </div>
     );
 });

@@ -15,7 +15,8 @@ class PortfolioController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware(['auth'],  ['create', 'store', 'edit', 'update', 'destroy', 'uploadImage']),
+            new Middleware(['auth'],  ['create', 'store', 'uploadImage']),
+            new Middleware(['auth', 'can:update,destroy'],  ['edit', 'update', 'destroy']),
         ];
     }
 
