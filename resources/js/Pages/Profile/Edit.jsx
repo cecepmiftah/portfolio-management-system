@@ -120,10 +120,10 @@ export default function Edit({ user }) {
                     </div>
                     <form onSubmit={submit} encType="multipart/form-data">
                         {/* Form Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {/* First Name */}
-                            <div className="form-control">
-                                <label className="label">
+                            <div className="form-control grid grid-template-areas='label input'">
+                                <label className="label grid-area-label">
                                     <span className="label-text">
                                         First Name
                                     </span>
@@ -134,7 +134,7 @@ export default function Edit({ user }) {
                                     onChange={(e) =>
                                         setData("first_name", e.target.value)
                                     }
-                                    className={`input input-bordered ${
+                                    className={`input input-bordered grid-area-input ${
                                         errors.first_name ? "input-error" : ""
                                     }`}
                                 />
@@ -148,8 +148,8 @@ export default function Edit({ user }) {
                             </div>
 
                             {/* Last Name */}
-                            <div className="form-control">
-                                <label className="label">
+                            <div className="form-control grid grid-template-areas='label input'">
+                                <label className="label grid-area-label">
                                     <span className="label-text">
                                         Last Name
                                     </span>
@@ -160,13 +160,13 @@ export default function Edit({ user }) {
                                     onChange={(e) =>
                                         setData("last_name", e.target.value)
                                     }
-                                    className="input input-bordered"
+                                    className="input input-bordered grid-area-input"
                                 />
                             </div>
 
                             {/* Username */}
-                            <div className="form-control">
-                                <label className="label">
+                            <div className="form-control grid grid-template-areas='label input'">
+                                <label className="label grid-area-label">
                                     <span className="label-text">Username</span>
                                 </label>
                                 <input
@@ -175,7 +175,7 @@ export default function Edit({ user }) {
                                     onChange={(e) =>
                                         setData("username", e.target.value)
                                     }
-                                    className={`input input-bordered ${
+                                    className={`input input-bordered grid-area-input ${
                                         errors.username ? "input-error" : ""
                                     }`}
                                 />
@@ -189,8 +189,8 @@ export default function Edit({ user }) {
                             </div>
 
                             {/* Email */}
-                            <div className="form-control">
-                                <label className="label">
+                            <div className="form-control grid grid-template-areas='label input'">
+                                <label className="label grid-area-label">
                                     <span className="label-text">Email</span>
                                 </label>
                                 <input
@@ -199,7 +199,7 @@ export default function Edit({ user }) {
                                     onChange={(e) =>
                                         setData("email", e.target.value)
                                     }
-                                    className={`input input-bordered ${
+                                    className={`input input-bordered grid-area-input ${
                                         errors.email ? "input-error" : ""
                                     }`}
                                 />
@@ -213,8 +213,8 @@ export default function Edit({ user }) {
                             </div>
 
                             {/* Occupation */}
-                            <div className="form-control">
-                                <label className="label">
+                            <div className="form-control grid grid-template-areas='label input'">
+                                <label className="label grid-area-label">
                                     <span className="label-text">
                                         Occupation
                                     </span>
@@ -225,13 +225,13 @@ export default function Edit({ user }) {
                                     onChange={(e) =>
                                         setData("occupation", e.target.value)
                                     }
-                                    className="input input-bordered"
+                                    className="input input-bordered grid-area-input"
                                 />
                             </div>
 
                             {/* Company */}
-                            <div className="form-control">
-                                <label className="label">
+                            <div className="form-control grid grid-template-areas='label input'">
+                                <label className="label grid-area-label">
                                     <span className="label-text">Company</span>
                                 </label>
                                 <input
@@ -240,13 +240,13 @@ export default function Edit({ user }) {
                                     onChange={(e) =>
                                         setData("company", e.target.value)
                                     }
-                                    className="input input-bordered"
+                                    className="input input-bordered grid-area-input"
                                 />
                             </div>
 
                             {/* Location */}
-                            <div className="form-control">
-                                <label className="label">
+                            <div className="form-control grid grid-template-areas='label input'">
+                                <label className="label grid-area-label">
                                     <span className="label-text">Location</span>
                                 </label>
                                 <input
@@ -255,13 +255,13 @@ export default function Edit({ user }) {
                                     onChange={(e) =>
                                         setData("location", e.target.value)
                                     }
-                                    className="input input-bordered"
+                                    className="input input-bordered grid-area-input"
                                 />
                             </div>
 
                             {/* City */}
-                            <div className="form-control">
-                                <label className="label">
+                            <div className="form-control grid grid-template-areas='label input'">
+                                <label className="label grid-area-label">
                                     <span className="label-text">City</span>
                                 </label>
                                 <input
@@ -270,13 +270,13 @@ export default function Edit({ user }) {
                                     onChange={(e) =>
                                         setData("city", e.target.value)
                                     }
-                                    className="input input-bordered"
+                                    className="input input-bordered grid-area-input"
                                 />
                             </div>
 
                             {/* Website */}
-                            <div className="form-control md:col-span-2">
-                                <label className="label">
+                            <div className="form-control grid grid-template-areas='label input'">
+                                <label className="label grid-area-label">
                                     <span className="label-text">Website</span>
                                 </label>
                                 <input
@@ -285,22 +285,24 @@ export default function Edit({ user }) {
                                     onChange={(e) =>
                                         setData("website", e.target.value)
                                     }
-                                    className="input input-bordered"
+                                    className="input input-bordered grid-area-input"
                                     placeholder="https://example.com"
                                 />
                             </div>
 
                             {/* About */}
-                            <div className="form-control md:col-span-2">
-                                <label className="label">
-                                    <span className="label-text">About</span>
+                            <div className="form-control md:col-span-2 lg:col-span-3 grid grid-template-areas='label input'">
+                                <label className="label grid-area-label">
+                                    <span className="label-text">
+                                        About yourself
+                                    </span>
                                 </label>
                                 <textarea
                                     value={data.about}
                                     onChange={(e) =>
                                         setData("about", e.target.value)
                                     }
-                                    className="textarea textarea-bordered h-32"
+                                    className="textarea textarea-bordered h-32 grid-area-input"
                                     placeholder="Tell us about yourself..."
                                 ></textarea>
                             </div>

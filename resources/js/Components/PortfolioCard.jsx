@@ -21,7 +21,8 @@ export default function PortfolioCard({ portfolio }) {
                             {portfolio.title}
                         </h3>
                         <p className="text-gray-300">
-                            {portfolio.description.length > 100
+                            {portfolio.description &&
+                            portfolio.description.length > 100
                                 ? `${portfolio.description.slice(0, 100)}...`
                                 : portfolio.description}
                         </p>

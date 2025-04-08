@@ -16,7 +16,7 @@ class PortfolioController extends Controller implements HasMiddleware
     {
         return [
             new Middleware(['auth'],  ['create', 'store', 'uploadImage']),
-            new Middleware(['auth', 'can:update,destroy'],  ['edit', 'update', 'destroy']),
+            new Middleware(['auth', 'can:update,portfolio'],  ['edit', 'update', 'destroy']),
         ];
     }
 
@@ -61,6 +61,8 @@ class PortfolioController extends Controller implements HasMiddleware
             'title' => 'required',
             'description' => 'nullable',
             'content' => 'required',
+            'project_date' => 'nullable|date',
+            'project_url' => 'nullable|url',
             'thumbnail' => 'required|image|max:2048',
         ]);
 
@@ -81,6 +83,8 @@ class PortfolioController extends Controller implements HasMiddleware
             'description' => $request->description,
             'slug' => $slug,
             'content' => json_encode($request->content),
+            'project_url' => $request->project_url,
+            'project_date' => $request->project_date,
             'thumbnail' => Storage::url($thumbnailPath),
         ]);
 
@@ -104,24 +108,68 @@ class PortfolioController extends Controller implements HasMiddleware
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Portfolio $portfolio)
     {
-        //
+        $content = json_decode($portfolio->content);
+
+        return inertia('Portfolio/Edit', [
+            'portfolio' => $portfolio,
+            'content' => $content,
+
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Portfolio $portfolio)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'title' => 'string|max:255',
+                'description' => 'nullable|string|max:255',
+                'content' => 'json',
+                'project_url' => 'nullable|url',
+                'project_date' => 'nullable|date',
+                'thumbnail' => 'nullable|image|max:2048',
+            ]);
+
+            if ($request->hasFile('thumbnail')) {
+                // Hapus thumbnail lama jika ada
+                if ($portfolio->thumbnail) {
+                    Storage::delete($portfolio->thumbnail);
+                }
+                $path = $request->file('thumbnail')->store('portfolio-thumbnails');
+                $validated['thumbnail'] = $path;
+            }
+
+            $portfolio->fill($validated);
+
+            if ($portfolio->isDirty()) {
+                $portfolio->save();
+                return redirect()->route('portfolios.show', $portfolio->slug)
+                    ->with('success', 'Portfolio updated successfully!');
+            } else {
+                return back()->withErrors([
+                    'error' => 'No changes were made'
+                ]);
+            }
+        } catch (\Exception $e) {
+            return json_encode(['error' => $e->getMessage()]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Portfolio $portfolio)
     {
-        //
+        // Delete the thumbnail image
+        Storage::disk('public')->delete($portfolio->thumbnail);
+
+        // Delete the portfolio
+        $portfolio->delete();
+
+        return redirect()->route('portfolios.index')->with('message', 'Portfolio deleted successfully.');
     }
 }

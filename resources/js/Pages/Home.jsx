@@ -175,7 +175,7 @@ export default function Home() {
 
                     <div className="text-center mt-12 animate-fade-in opacity-0 translate-y-10 transition-all duration-500">
                         <Link
-                            href="/explore"
+                            href="/portfolios"
                             className="btn btn-primary btn-wide rounded-full"
                         >
                             View More

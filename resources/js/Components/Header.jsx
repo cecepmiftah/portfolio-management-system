@@ -24,7 +24,7 @@ export default function Header() {
         <>
             {/* Header */}
             <header
-                className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+                className={`fixed top-0 w-full z-30 transition-all duration-300 ${
                     scrolled
                         ? "bg-base-100/90 backdrop-blur-md shadow-lg"
                         : "bg-base-100 shadow-sm"
@@ -118,7 +118,7 @@ export default function Header() {
                                                 <img
                                                     src={
                                                         auth.user.avatar ||
-                                                        "/default-avatar.jpg"
+                                                        avatarImg
                                                     }
                                                     alt={auth.user.name}
                                                 />
@@ -250,27 +250,26 @@ export default function Header() {
                     <div className="p-4">
                         {auth.user && (
                             <div className="flex items-center gap-4 mb-6 p-4 bg-base-200 rounded-lg">
-                                <div className="avatar online">
+                                <Link
+                                    href={`/user/${auth.user.username}`}
+                                    className="avatar online"
+                                >
                                     <div className="w-12 rounded-full">
                                         <img
-                                            src={
-                                                auth.user.avatar ||
-                                                "/default-avatar.jpg"
-                                            }
+                                            src={auth.user.avatar || avatarImg}
                                             alt={auth.user.name}
                                         />
                                     </div>
-                                </div>
+                                </Link>
                                 <div>
                                     <Link
                                         href={`/user/${auth.user.username}`}
                                         className="font-semibold hover:text-primary"
                                     >
-                                        {auth.user.name}
+                                        <p className="text-sm opacity-70">
+                                            @{auth.user.username}
+                                        </p>
                                     </Link>
-                                    <p className="text-sm opacity-70">
-                                        @{auth.user.username}
-                                    </p>
                                 </div>
                             </div>
                         )}

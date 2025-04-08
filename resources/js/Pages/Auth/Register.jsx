@@ -2,7 +2,8 @@ import { useForm } from "@inertiajs/react";
 
 export default function Register() {
     const { data, setData, post, processing, errors, transform } = useForm({
-        name: "",
+        first_name: "",
+        last_name: "",
         username: "",
         email: "",
         password: "",
@@ -48,7 +49,7 @@ export default function Register() {
                             <div className="diff-resizer"></div>
                         </figure>
                     </div>
-                    <div className="card bg-base-100 shadow-2xl hover:shadow-accent-content hover:transition duration-500 w-1/2">
+                    <div className="card bg-base-100 shadow-2xl hover:shadow-accent-content hover:transition duration-500 w-full md:w-1/2">
                         <div className="card-body w-full">
                             <form
                                 onSubmit={submit}
@@ -60,18 +61,32 @@ export default function Register() {
                                         FolioSnap
                                     </span>
                                 </h1>
-                                <label className="label">Your Name</label>
+                                <label className="label">First Name</label>
                                 <input
                                     type="text"
                                     className="input w-full"
-                                    placeholder="Name"
+                                    placeholder="First Name"
                                     onChange={(e) =>
-                                        setData("name", e.target.value)
+                                        setData("first_name", e.target.value)
                                     }
                                 />
-                                {errors.name && (
+                                {errors.first_name && (
                                     <p className="text-red-500">
-                                        {errors.name}
+                                        {errors.first_name}
+                                    </p>
+                                )}
+                                <label className="label">Last Name</label>
+                                <input
+                                    type="text"
+                                    className="input w-full"
+                                    placeholder="Last Name"
+                                    onChange={(e) =>
+                                        setData("last_name", e.target.value)
+                                    }
+                                />
+                                {errors.last_name && (
+                                    <p className="text-red-500">
+                                        {errors.last_name}
                                     </p>
                                 )}
                                 <label className="label">Username</label>

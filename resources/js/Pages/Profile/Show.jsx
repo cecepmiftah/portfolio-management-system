@@ -1,11 +1,35 @@
-import { Link, usePage, Head } from "@inertiajs/react";
+import { Link, usePage, Head, router } from "@inertiajs/react";
 import avatarImg from "../../../img/person.png";
+import { useState } from "react";
+import PortfolioCardProfile from "../../Components/CardComponents/PortfolioCardProfile";
 
 export default function Show({ user }) {
-    const { auth } = usePage().props;
+    const { auth, flash } = usePage().props;
+    const [message, setMessage] = useState(flash.message);
+
+    // function handleDelete(e) {
+    //     e.preventDefault();
+    //     console.log(e.target.value);
+    //     // router.delete(`/portfolios/${e.target.value}`, {
+    //     //     onSuccess: () => {
+    //     //         setMessage("Portfolio deleted successfully.");
+    //     //     },
+    //     //     onError: () => {
+    //     //         setMessage("Failed to delete portfolio.");
+    //     //     },
+    //     // });
+    // }
 
     return (
         <div className="min-h-screen bg-base-100">
+            {message && (
+                <div
+                    role="alert"
+                    className="alert alert-success alert-soft mb-4"
+                >
+                    <span>{message}</span>
+                </div>
+            )}
             {/* Cover Photo */}
             <div className="h-64 bg-gradient-to-r from-primary to-secondary relative">
                 <div className="absolute -bottom-16 left-8">
@@ -142,7 +166,9 @@ export default function Show({ user }) {
                         <div className="stats shadow bg-base-200 w-full">
                             <div className="stat">
                                 <div className="stat-title">Projects</div>
-                                <div className="stat-value">24</div>
+                                <div className="stat-value">
+                                    {user.portfolios.length}
+                                </div>
                                 <div className="stat-desc">
                                     Jan 1st - Feb 1st
                                 </div>
@@ -170,29 +196,11 @@ export default function Show({ user }) {
                                     Portfolio Works
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                    {/* Sample Portfolio Items */}
                                     {user.portfolios.map((item) => (
-                                        <div
+                                        <PortfolioCardProfile
                                             key={item.id}
-                                            className="card image-full hover:scale-[1.02] transition-transform"
-                                        >
-                                            <figure className="aspect-[4/3] w-full">
-                                                {" "}
-                                                {/* Rasio 4:3 */}
-                                                <img
-                                                    src={item.thumbnail} // 2x lebih besar untuk retina
-                                                    alt="Project"
-                                                    className="w-full h-full object-cover rounded-lg"
-                                                    loading="lazy"
-                                                />
-                                            </figure>
-                                            <div className="card-body justify-end">
-                                                <h3 className="card-title">
-                                                    Project {item.title}
-                                                </h3>
-                                                <p>UI/UX Design</p>
-                                            </div>
-                                        </div>
+                                            item={item}
+                                        />
                                     ))}
                                 </div>
                             </div>
