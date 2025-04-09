@@ -6,58 +6,77 @@ import { useDebouncedCallback } from "use-debounce";
 import PortfolioEditor from "../../Components/PortfolioComponents/PortfolioEditor";
 
 const Edit = memo(({ portfolio, content }) => {
-    const { data, setData, patch, processing, errors } = useForm({
-        title: portfolio.title,
-        description: portfolio.description,
-        content: portfolio.content,
-        project_url: portfolio.project_url,
-        project_date: portfolio.project_date,
-        thumbnail: portfolio.thumbnail,
-    });
-    // const [content, setContent] = useState(data.content);
     const { flash } = usePage().props;
 
+    const [data, setData] = useState({
+        title: portfolio.title,
+        description: portfolio.description,
+        project_url: portfolio.project_url,
+        project_date: portfolio.project_date,
+    });
+    const [contentState, setContentState] = useState(content);
+    const [thumbnail, setThumbnail] = useState(data.thumbnail);
+
     const [message, setMessage] = useState(flash.message);
+    const [errors, setErrors] = useState(flash.errors || {});
     const [loading, setLoading] = useState(false);
     const [thumbnailPreview, setThumbnailPreview] = useState(
         portfolio.thumbnail || null
     );
 
     const debounceUpdate = useDebouncedCallback((value) => {
-        setData("content", value);
+        // setData("content", value);
+        setContentState(value);
     }, 300);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+
+        console.log(data.project_date, data.project_url);
+
         const formData = new FormData();
         formData.append("title", data.title);
         formData.append("description", data.description);
+
         formData.append("project_url", data.project_url);
+
         formData.append("project_date", data.project_date);
 
         // Kalau content adalah objek (JSON editor), harus diubah jadi string dulu
-        formData.append("content", JSON.stringify(data.content));
+        formData.append("content", JSON.stringify(contentState));
 
         // Tambahkan file jika ada perubahan
-        if (data.thumbnail instanceof File) {
-            formData.append("thumbnail", data.thumbnail);
+        if (thumbnail instanceof File) {
+            formData.append("thumbnail", thumbnail);
         }
+
+        formData.append("_method", "PATCH");
 
         try {
             const response = await fetch(`/portfolios/${portfolio.slug}`, {
-                method: "PATCH",
+                method: "POST",
                 headers: {
                     "X-CSRF-TOKEN": document
                         .querySelector('meta[name="csrf-token"]')
                         .getAttribute("content"),
                     "X-Requested-With": "XMLHttpRequest",
+                    Accept: "application/json",
                     // Jangan set Content-Type, biar browser otomatis jadi multipart/form-data
                 },
                 body: formData,
             });
 
             const result = await response.json();
+            console.log(result);
 
             if (response.ok) {
                 setMessage("Portfolio updated successfully!");
@@ -69,6 +88,7 @@ const Edit = memo(({ portfolio, content }) => {
             setLoading(false);
         } catch (error) {
             setLoading(false);
+            setErrors({ upload: "Failed to update portfolio." + error });
             console.error("Update error:", error);
         }
     };
@@ -76,7 +96,8 @@ const Edit = memo(({ portfolio, content }) => {
     const handleThumbnailChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setData("thumbnail", file);
+            // setData("thumbnail", file);
+            setThumbnail(file);
             setThumbnailPreview(URL.createObjectURL(file));
         }
     };
@@ -115,7 +136,7 @@ const Edit = memo(({ portfolio, content }) => {
                         placeholder="Lorem ipsum dolor sit amet"
                         className="input input-bordered w-full"
                         value={data.title}
-                        onChange={(e) => setData("title", e.target.value)}
+                        onChange={handleChange}
                     />
                     {errors.title && (
                         <p className="text-red-500">{errors.title}</p>
@@ -134,7 +155,7 @@ const Edit = memo(({ portfolio, content }) => {
                         placeholder="Lorem ipsum dolor sit amet"
                         className="input input-bordered w-full"
                         value={data.description}
-                        onChange={(e) => setData("description", e.target.value)}
+                        onChange={handleChange}
                     />
                     {errors.description && (
                         <p className="text-red-500">{errors.description}</p>
@@ -185,9 +206,7 @@ const Edit = memo(({ portfolio, content }) => {
                             placeholder="https://example.com"
                             className="input input-bordered"
                             value={data.project_url}
-                            onChange={(e) =>
-                                setData("project_url", e.target.value)
-                            }
+                            onChange={handleChange}
                         />
                     </div>
                     <div className="form-control">
@@ -199,9 +218,7 @@ const Edit = memo(({ portfolio, content }) => {
                             name="project_date"
                             className="input input-bordered"
                             value={data.project_date}
-                            onChange={(e) =>
-                                setData("project_date", e.target.value)
-                            }
+                            onChange={handleChange}
                         />
                     </div>
                 </div>
@@ -211,13 +228,11 @@ const Edit = memo(({ portfolio, content }) => {
                     <button
                         type="submit"
                         className={`btn btn-primary btn-wide ${
-                            processing || loading ? "loading" : ""
+                            loading ? "loading" : ""
                         }`}
-                        disabled={processing || loading}
+                        disabled={loading}
                     >
-                        {processing || loading
-                            ? "Updating..."
-                            : "Update Portfolio"}
+                        {loading ? "Updating..." : "Update Portfolio"}
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-5 w-5 ml-2"

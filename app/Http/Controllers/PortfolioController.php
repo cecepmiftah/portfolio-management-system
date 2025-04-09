@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Portfolio;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+
 
 class PortfolioController extends Controller implements HasMiddleware
 {
@@ -125,10 +128,11 @@ class PortfolioController extends Controller implements HasMiddleware
     public function update(Request $request, Portfolio $portfolio)
     {
         try {
+
             $validated = $request->validate([
-                'title' => 'string|max:255',
+                'title' => 'required|string|max:255',
                 'description' => 'nullable|string|max:255',
-                'content' => 'json',
+                'content' => 'required|json',
                 'project_url' => 'nullable|url',
                 'project_date' => 'nullable|date',
                 'thumbnail' => 'nullable|image|max:2048',
@@ -139,23 +143,48 @@ class PortfolioController extends Controller implements HasMiddleware
                 if ($portfolio->thumbnail) {
                     Storage::delete($portfolio->thumbnail);
                 }
-                $path = $request->file('thumbnail')->store('portfolio-thumbnails');
-                $validated['thumbnail'] = $path;
+                $path = $request->file('thumbnail')->store('portfolios-thumbnails', 'public');
+                $validated['thumbnail'] = Storage::url($path);
+            }
+
+            if ($portfolio->slug != Str::slug($request->title)) {
+                // Jika slug berubah, buat slug baru
+                // dan cek apakah slug sudah ada di database
+                $validated['slug'] = Str::slug($request->title);
+                $searchSlug = Portfolio::where('slug', Str::slug($request->title))->first();
+                // Jika slug sudah ada, tambahkan timestamp
+                // untuk menghindari duplikasi slug
+                if ($searchSlug && $searchSlug->id != $portfolio->id) {
+                    $validated['slug'] = $validated['slug'] . '-' . time();
+                }
             }
 
             $portfolio->fill($validated);
 
             if ($portfolio->isDirty()) {
                 $portfolio->save();
-                return redirect()->route('portfolios.show', $portfolio->slug)
-                    ->with('success', 'Portfolio updated successfully!');
+
+                return response()->json([
+                    'message' => 'Portfolio updated successfully!',
+                    'slug' => $portfolio->slug,
+                ], 200);
             } else {
-                return back()->withErrors([
-                    'error' => 'No changes were made'
-                ]);
+                return response()->json([
+                    'error' => 'No changes were made.'
+                ], 422);
             }
-        } catch (\Exception $e) {
-            return json_encode(['error' => $e->getMessage()]);
+        } catch (Exception $e) {
+            // Log error termasuk message dan trace
+            Log::error('Error during update', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            // Opsional: return JSON supaya tidak balik HTML
+            return response()->json([
+                'error' => 'Update failed',
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 

@@ -43,8 +43,8 @@ Route::controller(PortfolioController::class)->group(function () {
     Route::post('/portfolios', 'store')->name('portfolios.store');
     Route::get('/portfolios/create', 'create')->name('portfolios.create');
     Route::get('/portfolios/{portfolio:slug}', 'show')->name('portfolios.show');
-    Route::get('/portfolios/{portfolio:slug}/edit', 'edit')->name('portfolios.edit');
     Route::patch('/portfolios/{portfolio:slug}', 'update')->name('portfolios.update');
+    Route::get('/portfolios/{portfolio:slug}/edit', 'edit')->name('portfolios.edit');
     Route::delete('/portfolios/{portfolio}', 'destroy')->name('portfolios.destroy');
 
     Route::post('/upload-image', 'uploadImage')->name('upload.image');
