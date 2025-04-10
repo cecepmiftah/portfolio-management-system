@@ -4,14 +4,19 @@ import ThemeController from "./ThemeController";
 import { useEffect, useState } from "react";
 
 export default function Header() {
+    const { url } = usePage();
     const { auth } = usePage().props;
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
     function logout(e) {
         e.preventDefault();
 
         router.post("/logout");
     }
+
+    const active = "bg-base-200 text-primary";
+
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 10);
@@ -70,7 +75,11 @@ export default function Header() {
                             <li>
                                 <Link
                                     href="/"
-                                    className="hover:text-primary transition-colors"
+                                    className={`hover:text-primary transition-colors ${
+                                        url === "/"
+                                            ? "bg-base-200 text-primary"
+                                            : ""
+                                    }`}
                                 >
                                     Home
                                 </Link>
@@ -78,7 +87,11 @@ export default function Header() {
                             <li>
                                 <Link
                                     href="/portfolios"
-                                    className="hover:text-primary transition-colors"
+                                    className={`hover:text-primary transition-colors ${
+                                        url === "/portfolios"
+                                            ? "bg-base-200 text-primary"
+                                            : ""
+                                    }`}
                                 >
                                     Explore
                                 </Link>
@@ -278,7 +291,11 @@ export default function Header() {
                             <li>
                                 <Link
                                     href="/"
-                                    className="hover:text-primary hover:bg-base-200"
+                                    className={`hover:text-primary transition-colors ${
+                                        url === "/"
+                                            ? "bg-base-200 text-primary"
+                                            : ""
+                                    }`}
                                 >
                                     Home
                                 </Link>
@@ -286,7 +303,11 @@ export default function Header() {
                             <li>
                                 <Link
                                     href="/portfolios"
-                                    className="hover:text-primary hover:bg-base-200"
+                                    className={`hover:text-primary transition-colors ${
+                                        url === "/portfolios"
+                                            ? "bg-base-200 text-primary"
+                                            : ""
+                                    }`}
                                 >
                                     Explore Portfolios
                                 </Link>
@@ -296,7 +317,11 @@ export default function Header() {
                                 <li>
                                     <Link
                                         href="/portfolios/create"
-                                        className="hover:text-primary hover:bg-base-200"
+                                        className={`hover:text-primary transition-colors ${
+                                            url === "/portfolios/create"
+                                                ? "bg-base-200 text-primary"
+                                                : ""
+                                        }`}
                                     >
                                         Upload Portfolio
                                     </Link>

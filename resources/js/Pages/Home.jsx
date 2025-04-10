@@ -61,7 +61,7 @@ export default function Home() {
                         </p>
                         <div className="flex gap-4 justify-center">
                             <Link
-                                href="/register"
+                                href="/portfolios/create"
                                 className="btn btn-accent btn-lg rounded-full px-8 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
                             >
                                 Get Started

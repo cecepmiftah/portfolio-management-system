@@ -18,14 +18,13 @@ const Edit = memo(({ portfolio, content }) => {
     const [thumbnail, setThumbnail] = useState(data.thumbnail);
 
     const [message, setMessage] = useState(flash.message);
-    const [errors, setErrors] = useState(flash.errors || {});
+    const [errors, setErrors] = useState(flash.errors || "");
     const [loading, setLoading] = useState(false);
     const [thumbnailPreview, setThumbnailPreview] = useState(
         portfolio.thumbnail || null
     );
 
     const debounceUpdate = useDebouncedCallback((value) => {
-        // setData("content", value);
         setContentState(value);
     }, 300);
 
@@ -83,12 +82,13 @@ const Edit = memo(({ portfolio, content }) => {
             } else {
                 // Tampilkan error dari Laravel
                 console.error(result.errors);
+                setErrors("Something went wrong. Please try again.");
             }
 
             setLoading(false);
         } catch (error) {
             setLoading(false);
-            setErrors({ upload: "Failed to update portfolio." + error });
+            setErrors({ upload: "Failed to update portfolio." });
             console.error("Update error:", error);
         }
     };
@@ -96,7 +96,6 @@ const Edit = memo(({ portfolio, content }) => {
     const handleThumbnailChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            // setData("thumbnail", file);
             setThumbnail(file);
             setThumbnailPreview(URL.createObjectURL(file));
         }

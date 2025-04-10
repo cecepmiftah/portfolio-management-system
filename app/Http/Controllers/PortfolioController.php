@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Portfolio;
 use Exception;
 use Illuminate\Http\Request;
@@ -38,7 +39,10 @@ class PortfolioController extends Controller implements HasMiddleware
      */
     public function create()
     {
-        return inertia('Portfolio/Create');
+        $categories = Category::all();
+        return inertia('Portfolio/Create', [
+            'categories' => $categories,
+        ]);
     }
 
 
@@ -63,6 +67,7 @@ class PortfolioController extends Controller implements HasMiddleware
         $request->validate([
             'title' => 'required',
             'description' => 'nullable',
+            'category' => 'required|string|max:100',
             'content' => 'required',
             'project_date' => 'nullable|date',
             'project_url' => 'nullable|url',
@@ -80,6 +85,11 @@ class PortfolioController extends Controller implements HasMiddleware
             $slug = $slug . '-' . time();
         }
 
+        $category = Category::createOrFirst([
+            'name' => $request->category,
+            'slug' => Str::slug($request->category),
+        ]);
+
         $portfolio = Portfolio::create([
             'user_id' => auth()->user()->id,
             'title' => $request->title,
@@ -90,6 +100,9 @@ class PortfolioController extends Controller implements HasMiddleware
             'project_date' => $request->project_date,
             'thumbnail' => Storage::url($thumbnailPath),
         ]);
+
+        // Attach the category to the portfolio
+        $portfolio->categories()->attach($category->id);
 
         return redirect()->route('portfolios.index')->with('success', 'Portfolio created successfully.');
     }

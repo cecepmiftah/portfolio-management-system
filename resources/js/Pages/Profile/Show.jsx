@@ -200,6 +200,7 @@ export default function Show({ user }) {
                                         <PortfolioCardProfile
                                             key={item.id}
                                             item={item}
+                                            userId={auth.user}
                                         />
                                     ))}
                                 </div>

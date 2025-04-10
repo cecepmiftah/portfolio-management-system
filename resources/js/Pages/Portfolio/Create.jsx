@@ -19,6 +19,7 @@ import {
 } from "reactjs-tiptap-editor/extension-bundle";
 import "reactjs-tiptap-editor/style.css";
 import { useDebouncedCallback } from "use-debounce";
+import CategoryInput from "../../Components/PortfolioComponents/InputCategory";
 
 const ALL_EXTENSIONS = [
     BaseKit.configure({
@@ -69,19 +70,21 @@ const ALL_EXTENSIONS = [
     }),
 ];
 
-const Create = memo(() => {
+const Create = memo(({ categories }) => {
     const [content, setContent] = useState(null);
     const { flash } = usePage().props;
 
     const [message, setMessage] = useState(flash.message);
+    const [availableCategories, setAvailableCategories] = useState(categories);
 
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, transform } = useForm({
         title: "",
         description: "",
         content: "",
         project_url: "",
         project_date: "",
         thumbnail: null,
+        category: "",
     });
 
     const debounceUpdate = useDebouncedCallback((value) => {
@@ -89,15 +92,31 @@ const Create = memo(() => {
         setData("content", value);
     }, 300);
 
+    transform((data) => ({
+        ...data,
+        category: data.category.toLowerCase(),
+    }));
+
     const handleSubmit = (e) => {
         e.preventDefault();
+
         post("/portfolios", {
             forceFormData: true, // penting agar thumbnail bisa terkirim
             onSuccess: () => {
                 setMessage("Portfolio created successfully!");
             },
+            onError: (errors) => {
+                setMessage(errors);
+                console.error(errors);
+            },
         });
     };
+
+    // useEffect(() => {
+    //     fetch("/categories")
+    //         .then((res) => res.json())
+    //         .then((data) => setAvailableCategories(data));
+    // }, []);
 
     return (
         <div className="p-4 max-w-5xl mx-auto">
@@ -188,6 +207,13 @@ const Create = memo(() => {
                             />
                         )}
                     </label>
+
+                    <CategoryInput
+                        categories={availableCategories}
+                        selectedCategory={data.category}
+                        onCategoryChange={(value) => setData("category", value)}
+                        error={errors.category}
+                    />
 
                     <TextEditor
                         output="json"

@@ -8,6 +8,8 @@ class Category extends Model
 {
     public $timestamps = false;
 
+    protected $guarded = [];
+
     public function portfolios()
     {
         return $this->belongsToMany(Portfolio::class, 'category_portfolios');
