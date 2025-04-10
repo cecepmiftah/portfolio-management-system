@@ -1,7 +1,59 @@
 import { Head, useForm, usePage } from "@inertiajs/react";
 import { useRef, useState } from "react";
 import avatarImg from "../../../img/person.png";
+import WorkExperienceInput from "../../Components/ProfileComponents/WorkExperienceInput";
 
+const experiences = [
+    {
+        id: 1,
+        start_date: "2020-01-01",
+        end_date: "2020-12-31",
+        is_current: false,
+        title: "Junior Developer",
+        company: "PT. ABC",
+        description:
+            "Membangun aplikasi web menggunakan teknologi React dan Node.js",
+    },
+    {
+        id: 2,
+        start_date: "2021-01-01",
+        end_date: "2022-06-30",
+        is_current: false,
+        title: "Senior Developer",
+        company: "PT. DEF",
+        description:
+            "Mengembangkan aplikasi mobile menggunakan teknologi React Native",
+    },
+    {
+        id: 3,
+        start_date: "2022-07-01",
+        end_date: null,
+        is_current: true,
+        title: "Lead Developer",
+        company: "PT. GHI",
+        description:
+            "Mengembangkan aplikasi web menggunakan teknologi Next.js dan GraphQL",
+    },
+    {
+        id: 4,
+        start_date: "2018-01-01",
+        end_date: "2019-12-31",
+        is_current: false,
+        title: "Intern",
+        company: "PT. JKL",
+        description:
+            "Membantu mengembangkan aplikasi web menggunakan teknologi PHP dan MySQL",
+    },
+    {
+        id: 5,
+        start_date: "2019-01-01",
+        end_date: "2020-06-30",
+        is_current: false,
+        title: "Junior QA",
+        company: "PT. MNO",
+        description: "Menguji aplikasi web menggunakan teknologi Selenium",
+    },
+];
 export default function Edit({ user }) {
     const { flash } = usePage().props;
 
@@ -10,6 +62,10 @@ export default function Edit({ user }) {
     const [loadingImage, setLoadingImage] = useState(false);
     const fileInput = useRef(null);
 
+    const [workExperiences, setWorkExperiences] = useState(
+        // user.workExperiences || []
+        experiences
+    );
     const { data, setData, patch, processing, errors } = useForm({
         first_name: user.first_name,
         last_name: user.last_name || "",
@@ -21,6 +77,7 @@ export default function Edit({ user }) {
         location: user.location || "",
         city: user.city || "",
         website: user.website || "",
+        work_experiences: user.work_experiences || [],
     });
 
     const handleAvatarChange = (e) => {
@@ -306,6 +363,14 @@ export default function Edit({ user }) {
                                     placeholder="Tell us about yourself..."
                                 ></textarea>
                             </div>
+                        </div>
+
+                        {/* Work Experience */}
+                        <div className="w-full">
+                            <WorkExperienceInput
+                                experiences={workExperiences}
+                                onChange={setWorkExperiences}
+                            />
                         </div>
 
                         {/* Submit Button */}
