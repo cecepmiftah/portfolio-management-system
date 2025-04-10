@@ -1,6 +1,5 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import "reactjs-tiptap-editor/style.css";
-import { Extension } from "@tiptap/core";
 import { VIEWER_EXTENSIONS } from "../../data/data";
 
 export default function PortfolioViewer({ content }) {

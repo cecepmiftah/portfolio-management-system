@@ -2,16 +2,22 @@ import StarterKit from "@tiptap/starter-kit";
 import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Link from "@tiptap/extension-link";
-import Image from "@tiptap/extension-image";
+// import Image from "@tiptap/extension-image";
 import TextAlign from "@tiptap/extension-text-align";
 import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
 import CodeBlock from "@tiptap/extension-code-block";
+import { Extension } from "@tiptap/core";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 
 import Heading from "@tiptap/extension-heading";
 import FontFamily from "@tiptap/extension-font-family";
-import { FontSize, Indent } from "reactjs-tiptap-editor/extension-bundle";
+import {
+    FontSize,
+    Indent,
+    Image,
+} from "reactjs-tiptap-editor/extension-bundle";
+import "reactjs-tiptap-editor/style.css";
 
 export const VIEWER_EXTENSIONS = [
     StarterKit.configure({
@@ -25,7 +31,11 @@ export const VIEWER_EXTENSIONS = [
         HTMLAttributes: { class: "text-blue-500 hover:underline" },
     }),
     Image.configure({
-        HTMLAttributes: { class: "rounded-lg mx-auto max-w-full" },
+        allowBase64: false,
+        HTMLAttributes: {
+            class: "max-w-full h-auto rounded-lg",
+            loading: "lazy",
+        },
     }),
     TextAlign.configure({
         types: ["heading", "paragraph"],

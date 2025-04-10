@@ -115,9 +115,8 @@ class PortfolioController extends Controller implements HasMiddleware
         $content = json_decode($portfolio->content);
 
         return inertia('Portfolio/Show', [
-            'portfolio' => $portfolio,
+            'portfolio' => $portfolio->load(['user', 'categories']),
             'content' => $content,
-
         ]);
     }
 
