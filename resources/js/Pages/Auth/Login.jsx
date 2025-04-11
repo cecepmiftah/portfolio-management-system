@@ -21,7 +21,7 @@ export default function Login() {
             )}
             <div className="hero bg-base-200 min-h-screen">
                 <div className="hero-content w-full flex-col lg:flex-row">
-                    <div className="hidden md:block text-center w-1/3 lg:text-left">
+                    <div className="hidden md:block text-center md:w-1/2 lg:w-1/3 lg:text-left">
                         <figure className="diff aspect-16/9" tabIndex={0}>
                             <div className="diff-item-1" role="img">
                                 <div className="bg-primary text-primary-content grid place-content-center text-6xl font-black">
@@ -40,7 +40,7 @@ export default function Login() {
                             <div className="diff-resizer"></div>
                         </figure>
                     </div>
-                    <div className="card bg-base-100 shadow-2xl hover:shadow-accent-content hover:transition duration-500 w-full md:w-1/2">
+                    <div className="card bg-base-100 shadow-2xl hover:shadow-accent-content hover:transition duration-500 w-full md:w-[80%] lg:w-1/2">
                         <div className="card-body w-full">
                             <form
                                 onSubmit={submit}

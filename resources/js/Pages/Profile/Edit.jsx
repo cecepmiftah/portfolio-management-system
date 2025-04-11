@@ -1,5 +1,5 @@
-import { Head, useForm, usePage } from "@inertiajs/react";
-import { useRef, useState } from "react";
+import { Head, router, useForm, usePage } from "@inertiajs/react";
+import { useEffect, useRef, useState } from "react";
 import avatarImg from "../../../img/person.png";
 import WorkExperienceInput from "../../Components/ProfileComponents/WorkExperienceInput";
 
@@ -9,7 +9,7 @@ const experiences = [
         start_date: "2020-01-01",
         end_date: "2020-12-31",
         is_current: false,
-        title: "Junior Developer",
+        position: "Junior Developer",
         company: "PT. ABC",
         description:
             "Membangun aplikasi web menggunakan teknologi React dan Node.js",
@@ -19,7 +19,7 @@ const experiences = [
         start_date: "2021-01-01",
         end_date: "2022-06-30",
         is_current: false,
-        title: "Senior Developer",
+        position: "Senior Developer",
         company: "PT. DEF",
         description:
             "Mengembangkan aplikasi mobile menggunakan teknologi React Native",
@@ -29,7 +29,7 @@ const experiences = [
         start_date: "2022-07-01",
         end_date: null,
         is_current: true,
-        title: "Lead Developer",
+        position: "Lead Developer",
         company: "PT. GHI",
         description:
             "Mengembangkan aplikasi web menggunakan teknologi Next.js dan GraphQL",
@@ -39,7 +39,7 @@ const experiences = [
         start_date: "2018-01-01",
         end_date: "2019-12-31",
         is_current: false,
-        title: "Intern",
+        position: "Intern",
         company: "PT. JKL",
         description:
             "Membantu mengembangkan aplikasi web menggunakan teknologi PHP dan MySQL",
@@ -49,7 +49,7 @@ const experiences = [
         start_date: "2019-01-01",
         end_date: "2020-06-30",
         is_current: false,
-        title: "Junior QA",
+        position: "Junior QA",
         company: "PT. MNO",
         description: "Menguji aplikasi web menggunakan teknologi Selenium",
     },
@@ -62,10 +62,6 @@ export default function Edit({ user }) {
     const [loadingImage, setLoadingImage] = useState(false);
     const fileInput = useRef(null);
 
-    const [workExperiences, setWorkExperiences] = useState(
-        // user.workExperiences || []
-        experiences
-    );
     const { data, setData, patch, processing, errors } = useForm({
         first_name: user.first_name,
         last_name: user.last_name || "",
@@ -77,7 +73,6 @@ export default function Edit({ user }) {
         location: user.location || "",
         city: user.city || "",
         website: user.website || "",
-        work_experiences: user.work_experiences || [],
     });
 
     const handleAvatarChange = (e) => {
@@ -176,6 +171,10 @@ export default function Edit({ user }) {
                         )}
                     </div>
                     <form onSubmit={submit} encType="multipart/form-data">
+                        <h2 className="text-xl font-semibold mb-4">
+                            Basic Personal Information
+                        </h2>
+
                         {/* Form Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {/* First Name */}
@@ -359,18 +358,10 @@ export default function Edit({ user }) {
                                     onChange={(e) =>
                                         setData("about", e.target.value)
                                     }
-                                    className="textarea textarea-bordered h-32 grid-area-input"
+                                    className="textarea textarea-bordered h-32 w-full grid-area-input"
                                     placeholder="Tell us about yourself..."
                                 ></textarea>
                             </div>
-                        </div>
-
-                        {/* Work Experience */}
-                        <div className="w-full">
-                            <WorkExperienceInput
-                                experiences={workExperiences}
-                                onChange={setWorkExperiences}
-                            />
                         </div>
 
                         {/* Submit Button */}
@@ -384,6 +375,13 @@ export default function Edit({ user }) {
                             </button>
                         </div>
                     </form>
+                    {/* Work Experience */}
+                    <div className="w-full">
+                        <WorkExperienceInput
+                            user={user}
+                            setMessage={setMessage}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

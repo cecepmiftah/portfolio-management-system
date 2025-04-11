@@ -31,7 +31,11 @@ class ProfileController extends Controller implements HasMiddleware
     public function edit(User $user)
     {
         return inertia('Profile/Edit', [
-            'user' => $user
+            'user' => $user->load([
+                'workExperiences' => function ($query) {
+                    $query->latest();
+                }
+            ])
         ]);
     }
 
@@ -52,10 +56,10 @@ class ProfileController extends Controller implements HasMiddleware
             'website' => 'nullable|url|max:255',
         ]);
 
-
         $user->fill($validated);
 
         if ($user->isDirty()) {
+
             $user->save();
         } else {
             return back()->withErrors([
@@ -64,6 +68,26 @@ class ProfileController extends Controller implements HasMiddleware
         }
 
         return to_route('user.edit', $user)->with('message', 'Profile updated successfully');
+    }
+
+    public function updateWorkExperiences(User $user, Request $request)
+    {
+        $validated = $request->validate([
+            "company" => "required|string|max:100",
+            "position" => "required|string|max:100",
+            "start_date" => "required|date",
+            "end_date" => "nullable|date|after_or_equal:start_date",
+            "is_current" => "nullable|boolean",
+            "description" => "nullable|string|max:500",
+        ]);
+
+        $user->workExperiences()->updateOrCreate(
+            [
+                'id' => $request->id,
+            ],
+            $validated
+        );
+        return back()->with('message', 'Work experience updated successfully');
     }
 
     public function updateAvatar(User $user, Request $request)

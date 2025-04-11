@@ -48,7 +48,7 @@ class SocialiteController extends Controller
 
             Auth::login($user);
 
-            return to_route('/home');
+            return redirect()->intended('/');
         } catch (\Exception $e) {
 
             Log::error('Google login failed', [
