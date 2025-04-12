@@ -36,6 +36,7 @@ Route::controller(ProfileController::class)->group(function () {
     Route::get('/user/{user:username}/edit', 'edit')->name('user.edit');
     Route::patch('/user/{user:username}', 'update')->name('user.update');
     Route::post('/user/{user:username}/work-experiences', 'updateWorkExperiences')->name('user.work-experiences.update');
+    Route::delete('/user/{user:username}/work-experiences', 'updateWorkExperiences')->name('user.work-experiences.update');
 
     // Route::delete('/user/{user:username}', 'destroy')->name('user.destroy');
 });

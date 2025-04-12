@@ -3,7 +3,6 @@ import { format, set } from "date-fns";
 import { Link, useForm, usePage } from "@inertiajs/react";
 
 export default function WorkExperienceInput({ user, setMessage }) {
-    console.log(user.work_experiences);
     const { auth } = usePage().props;
 
     const { data, setData, post, processing, errors } = useForm({
@@ -14,11 +13,6 @@ export default function WorkExperienceInput({ user, setMessage }) {
         is_current: false,
         description: "",
     });
-
-    const handleRemoveExperience = (index) => {
-        // const updatedExperiences = experiences.filter((_, i) => i !== index);
-        // setWorkExperiences(updatedExperiences);
-    };
 
     const handleCurrentJobChange = (e) => {
         const isChecked = e.target.checked;
@@ -75,16 +69,14 @@ export default function WorkExperienceInput({ user, setMessage }) {
                                               )}
                                     </p>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        // handleRemoveExperience(index)
-                                        console.log("TODO: Remove experience")
-                                    }
+                                <Link
+                                    href={`/user/${user.username}/work-experiences`}
+                                    method="delete"
+                                    data={{ id: exp.id }}
                                     className="text-red-500 hover:text-red-700"
                                 >
                                     Remove
-                                </button>
+                                </Link>
                             </div>
                         </div>
                     ))}

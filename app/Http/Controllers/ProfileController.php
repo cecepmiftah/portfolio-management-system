@@ -21,7 +21,10 @@ class ProfileController extends Controller implements HasMiddleware
     public function show(User $user)
     {
         $user->load([
-            'portfolios'
+            'portfolios',
+            'workExperiences' => function ($query) {
+                $query->latest();
+            },
         ]);
         return inertia('Profile/Show', [
             'user' => $user
@@ -72,22 +75,32 @@ class ProfileController extends Controller implements HasMiddleware
 
     public function updateWorkExperiences(User $user, Request $request)
     {
-        $validated = $request->validate([
-            "company" => "required|string|max:100",
-            "position" => "required|string|max:100",
-            "start_date" => "required|date",
-            "end_date" => "nullable|date|after_or_equal:start_date",
-            "is_current" => "nullable|boolean",
-            "description" => "nullable|string|max:500",
-        ]);
-
-        $user->workExperiences()->updateOrCreate(
-            [
-                'id' => $request->id,
-            ],
-            $validated
-        );
-        return back()->with('message', 'Work experience updated successfully');
+        //Update or create work experience
+        if ($request->method() === "PATCH") {
+            $validated = $request->validate([
+                "company" => "required|string|max:100",
+                "position" => "required|string|max:100",
+                "start_date" => "required|date",
+                "end_date" => "nullable|date|after_or_equal:start_date",
+                "is_current" => "nullable|boolean",
+                "description" => "nullable|string|max:500",
+            ]);
+            $user->workExperiences()->updateOrCreate(
+                [
+                    'id' => $request->id,
+                ],
+                $validated
+            );
+            return back()->with('message', 'Work experience updated successfully');
+        }
+        //Delete work experience
+        if ($request->method() === "DELETE") {
+            $request->validate([
+                'id' => 'required|exists:work_experiences,id',
+            ]);
+            $user->workExperiences()->where('id', $request->id)->delete();
+            return back()->with('message', 'Work experience deleted successfully');
+        }
     }
 
     public function updateAvatar(User $user, Request $request)

@@ -9,18 +9,18 @@ export default function WorkExperienceSection({ experiences }) {
 
             {experiences?.length > 0 ? (
                 <div className="space-y-6">
-                    {experiences.map((exp, index) => (
+                    {experiences.map((exp) => (
                         <div
-                            key={index}
-                            className="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
+                            key={exp.id}
+                            className="bg-base-200 rounded-lg shadow p-6"
                         >
                             <div className="flex justify-between items-start">
                                 <div>
                                     <h3 className="text-lg font-medium">
-                                        {exp.job_title}
+                                        {exp.position}
                                     </h3>
                                     <p className="text-gray-600 dark:text-gray-400">
-                                        {exp.company_name}
+                                        at {exp.company}
                                     </p>
                                 </div>
                                 <div className="text-sm text-gray-500 dark:text-gray-400">

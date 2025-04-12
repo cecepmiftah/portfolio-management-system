@@ -40,8 +40,6 @@ const Edit = memo(({ portfolio, content }) => {
         e.preventDefault();
         setLoading(true);
 
-        console.log(data.project_date, data.project_url);
-
         const formData = new FormData();
         formData.append("title", data.title);
         formData.append("description", data.description);
@@ -75,7 +73,6 @@ const Edit = memo(({ portfolio, content }) => {
             });
 
             const result = await response.json();
-            console.log(result);
 
             if (response.ok) {
                 setMessage("Portfolio updated successfully!");

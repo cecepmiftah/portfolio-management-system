@@ -4,65 +4,12 @@ import { useState } from "react";
 import PortfolioCardProfile from "../../Components/CardComponents/PortfolioCardProfile";
 import WorkExperienceSection from "../../Components/ProfileComponents/WorkExperienceSection";
 
-const experiences = [
-    {
-        id: 1,
-        start_date: "2020-01-01",
-        end_date: "2020-12-31",
-        is_current: false,
-        title: "Junior Developer",
-        company: "PT. ABC",
-        description:
-            "Membangun aplikasi web menggunakan teknologi React dan Node.js",
-    },
-    {
-        id: 2,
-        start_date: "2021-01-01",
-        end_date: "2022-06-30",
-        is_current: false,
-        title: "Senior Developer",
-        company: "PT. DEF",
-        description:
-            "Mengembangkan aplikasi mobile menggunakan teknologi React Native",
-    },
-    {
-        id: 3,
-        start_date: "2022-07-01",
-        end_date: null,
-        is_current: true,
-        title: "Lead Developer",
-        company: "PT. GHI",
-        description:
-            "Mengembangkan aplikasi web menggunakan teknologi Next.js dan GraphQL",
-    },
-    {
-        id: 4,
-        start_date: "2018-01-01",
-        end_date: "2019-12-31",
-        is_current: false,
-        title: "Intern",
-        company: "PT. JKL",
-        description:
-            "Membantu mengembangkan aplikasi web menggunakan teknologi PHP dan MySQL",
-    },
-    {
-        id: 5,
-        start_date: "2019-01-01",
-        end_date: "2020-06-30",
-        is_current: false,
-        title: "Junior QA",
-        company: "PT. MNO",
-        description: "Menguji aplikasi web menggunakan teknologi Selenium",
-    },
-];
-
 export default function Show({ user }) {
     const { auth, flash } = usePage().props;
     const [message, setMessage] = useState(flash.message);
 
     // function handleDelete(e) {
     //     e.preventDefault();
-    //     console.log(e.target.value);
     //     // router.delete(`/portfolios/${e.target.value}`, {
     //     //     onSuccess: () => {
     //     //         setMessage("Portfolio deleted successfully.");
@@ -240,7 +187,9 @@ export default function Show({ user }) {
                             </div>
                         )}
                         <div>
-                            <WorkExperienceSection experiences={experiences} />
+                            <WorkExperienceSection
+                                experiences={user.work_experiences}
+                            />
                         </div>
                     </div>
 
