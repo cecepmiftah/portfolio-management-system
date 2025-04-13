@@ -29,8 +29,8 @@ class Portfolio extends Model
         return $this->hasMany(Testimonial::class);
     }
 
-    public function userLikes()
+    public function likes()
     {
-        return $this->hasMany(Like::class);
+        return $this->hasMany(Like::class, 'portfolio_id');
     }
 }

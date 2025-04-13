@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
@@ -52,3 +53,5 @@ Route::controller(PortfolioController::class)->group(function () {
 
     Route::post('/upload-image', 'uploadImage')->name('upload.image');
 });
+
+Route::post('/portfolios/user/{user:username}/like', [LikeController::class, 'store'])->name('portfolios.like');

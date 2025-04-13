@@ -55,9 +55,9 @@ class User extends Authenticatable
         return $this->hasMany(WorkExperience::class)->orderBy('start_date', 'desc');
     }
 
-    public function likes()
+    public function likedPortfolios()
     {
-        return $this->hasMany(Like::class);
+        return $this->hasMany(Like::class, 'user_id');
     }
 
     public function comments()

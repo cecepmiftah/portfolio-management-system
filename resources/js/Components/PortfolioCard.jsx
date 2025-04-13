@@ -55,7 +55,7 @@ export default function PortfolioCard({ portfolio }) {
                     {/* Bagian like dan view */}
                     <div className="flex items-center space-x-4">
                         {/* Like Button */}
-                        <LikeButton />
+                        <LikeButton portfolio={portfolio} />
 
                         {/* View Count */}
                         <ViewCount />

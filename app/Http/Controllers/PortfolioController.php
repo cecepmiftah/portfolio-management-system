@@ -30,7 +30,7 @@ class PortfolioController extends Controller implements HasMiddleware
     public function index()
     {
         return inertia('Portfolio/Index', [
-            'portfolios' => Portfolio::with('user')->latest()->get(),
+            'portfolios' => Portfolio::with('user', 'likes')->withCount('likes')->latest()->get(),
         ]);
     }
 
