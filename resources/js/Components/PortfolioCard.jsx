@@ -2,6 +2,7 @@ import { Link } from "@inertiajs/react";
 import TooltipProfile from "./CardComponents/TooltipProfile";
 import LikeButton from "./CardComponents/LikeButton";
 import ViewCount from "./CardComponents/ViewCount";
+import avatarImg from "../../img/person.png";
 
 export default function PortfolioCard({ portfolio }) {
     return (
@@ -41,7 +42,7 @@ export default function PortfolioCard({ portfolio }) {
                             <div className="avatar">
                                 <div className="w-8 rounded-full">
                                     <img
-                                        src="https://placehold.co/50x50"
+                                        src={portfolio.user.avatar || avatarImg}
                                         alt="Profile Owner"
                                     />
                                 </div>

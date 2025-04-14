@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Portfolio;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
-use function Pest\Laravel\json;
 
 class LikeController extends Controller implements HasMiddleware
 {

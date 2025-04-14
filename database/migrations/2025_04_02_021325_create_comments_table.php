@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class);
-            $table->foreignIdFor(Portfolio::class);
-            $table->string('content');
+            $table->text('content');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('portfolio_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('parent_id')->nullable()->constrained('comments')->cascadeOnDelete();
             $table->timestamps();
         });
     }

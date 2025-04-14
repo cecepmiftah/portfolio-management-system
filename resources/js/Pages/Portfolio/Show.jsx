@@ -1,5 +1,8 @@
 import { Link, usePage } from "@inertiajs/react";
 import PortfolioViewer from "../../Components/PortfolioComponents/PortfolioViewer";
+import CommentSection from "../../Components/PortfolioComponents/CommentSection";
+import Pagination from "../../Components/Pagination";
+import avatarImg from "../../../img/person.png";
 
 export default function Show({ portfolio, content }) {
     const { auth } = usePage().props;
@@ -85,6 +88,66 @@ export default function Show({ portfolio, content }) {
                         </div>
                     )}
 
+                    {portfolio.likes && portfolio.likes_count > 0 && (
+                        <div className="flex items-center group relative">
+                            <div
+                                className="tooltip tooltip-left"
+                                data-tip={portfolio.likes
+                                    .map((like) => like.user.username)
+                                    .join(", ")}
+                            >
+                                <svg
+                                    className="w-5 h-5 mr-1 text-pink-500"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                                    />
+                                </svg>
+                            </div>
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                {portfolio.likes_count}
+                            </span>
+
+                            {/* Custom Tooltip for better styling */}
+                            <div className="absolute z-20 hidden group-hover:block left-full mb-2 px-3 py-2 text-sm font-medium text-white bg-gray-800 rounded-lg shadow-sm whitespace-nowrap">
+                                <div className="flex flex-col space-y-2">
+                                    <span className="font-semibold mb-1">
+                                        Liked by:
+                                    </span>
+                                    {portfolio.likes.slice(0, 5).map((like) => (
+                                        <div
+                                            key={like.id}
+                                            className="flex items-center space-x-2 px-4"
+                                        >
+                                            <img
+                                                src={
+                                                    like.user.avatar ||
+                                                    avatarImg
+                                                }
+                                                alt={like.user.username}
+                                                className="w-5 h-5 rounded-full object-cover"
+                                            />
+                                            <span>{like.user.username}</span>
+                                        </div>
+                                    ))}
+                                    {portfolio.likes_count > 5 && (
+                                        <span className="text-xs text-gray-400">
+                                            +{portfolio.likes_count - 5} more
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-gray-800 rotate-45"></div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Edit Link */}
+
                     {auth.user && auth.user.id === portfolio.user_id && (
                         <Link
                             href={`/portfolios/${portfolio.slug}/edit`}
@@ -118,6 +181,11 @@ export default function Show({ portfolio, content }) {
             {/* Portfolio Content */}
             <div className="bg-white p-6 dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
                 <PortfolioViewer content={contentParsed} />
+            </div>
+
+            <div className="mt-8">
+                {/* Comment Section Component */}
+                <CommentSection portfolioId={portfolio.id} />
             </div>
         </div>
     );

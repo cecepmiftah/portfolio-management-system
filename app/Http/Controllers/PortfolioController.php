@@ -29,8 +29,10 @@ class PortfolioController extends Controller implements HasMiddleware
      */
     public function index()
     {
+        $portfolios = Portfolio::with('user', 'likes', 'categories')->withCount('likes')->latest()->paginate(12)->withQueryString();
+
         return inertia('Portfolio/Index', [
-            'portfolios' => Portfolio::with('user', 'likes')->withCount('likes')->latest()->get(),
+            'portfolios' => $portfolios
         ]);
     }
 
@@ -114,8 +116,18 @@ class PortfolioController extends Controller implements HasMiddleware
     {
         $content = json_decode($portfolio->content);
 
+        // $portfolio->with('user', 'likes', 'categories')->withCount('likes')->increment('views');
+        $portfolio = Portfolio::with([
+            'user',
+            'likes.user' => function ($query) {
+                $query->select('id', 'username', 'avatar');
+            },
+            'categories'
+        ])->withCount('likes')->findOrFail($portfolio->id);
+
+
         return inertia('Portfolio/Show', [
-            'portfolio' => $portfolio->load(['user', 'categories']),
+            'portfolio' => $portfolio,
             'content' => $content,
         ]);
     }

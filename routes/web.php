@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PortfolioController;
@@ -55,3 +56,8 @@ Route::controller(PortfolioController::class)->group(function () {
 });
 
 Route::post('/portfolios/user/{user:username}/like', [LikeController::class, 'store'])->name('portfolios.like');
+
+
+Route::get('portfolios/{portfolio}/comments', [CommentController::class, 'index'])->name('comments.index');
+Route::post('comments', [CommentController::class, 'store'])->name('comments.store');
+Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
