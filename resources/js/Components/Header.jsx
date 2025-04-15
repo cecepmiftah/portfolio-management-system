@@ -35,7 +35,7 @@ export default function Header() {
                         : "bg-base-100 shadow-sm"
                 }`}
             >
-                <div className="navbar max-w-7xl mx-auto px-4">
+                <div className="navbar max-w-7xl mx-auto">
                     {/* Mobile Menu Button */}
                     <div className="lg:hidden">
                         <label

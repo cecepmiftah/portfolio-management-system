@@ -59,7 +59,7 @@ export default function PortfolioCard({ portfolio }) {
                         <LikeButton portfolio={portfolio} />
 
                         {/* View Count */}
-                        <ViewCount />
+                        <ViewCount count={portfolio.views} />
                     </div>
                 </div>
             </div>

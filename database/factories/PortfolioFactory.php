@@ -19,6 +19,7 @@ class PortfolioFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id,
+            'views' => rand(0, 1000),
             'title' => fake()->sentence(),
             'slug' => fake()->slug(),
             'description' => fake()->words(10, true),

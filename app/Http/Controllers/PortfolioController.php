@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-
+use Inertia\Inertia;
 
 class PortfolioController extends Controller implements HasMiddleware
 {
@@ -30,10 +30,36 @@ class PortfolioController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $portfolios = Portfolio::with('user', 'likes', 'categories')->withCount('likes')->latest()->paginate(12)->withQueryString();
+        $searchTerm = request('search');
+        $categorySlug = request('category');
 
-        return inertia('Portfolio/Index', [
-            'portfolios' => $portfolios
+        $portfolios = Portfolio::query()
+            ->with(['user', 'categories']) // Eager load categories
+            ->when($searchTerm, function ($query) use ($searchTerm) {
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('title', 'like', '%' . $searchTerm . '%')
+                        ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+                            $userQuery->where('username', 'like', '%' . $searchTerm . '%');
+                        });
+                });
+            })
+            ->when($categorySlug, function ($query) use ($categorySlug) {
+                // Ubah ini untuk relasi many-to-many
+                $query->whereHas('categories', function ($q) use ($categorySlug) {
+                    $q->where('slug', $categorySlug);
+                });
+            })
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
+
+        return Inertia::render('Portfolio/Index', [
+            'portfolios' => $portfolios,
+            'filters' => [
+                'search' => $searchTerm,
+                'category' => $categorySlug,
+            ],
+            'categories' => Category::all(), // Kirim semua kategori ke frontend
         ]);
     }
 
@@ -115,6 +141,9 @@ class PortfolioController extends Controller implements HasMiddleware
      */
     public function show(Portfolio $portfolio)
     {
+        // Increment the views count
+        $portfolio->increment('views');
+
         $content = json_decode($portfolio->content);
 
         // $portfolio->with('user', 'likes', 'categories')->withCount('likes')->increment('views');

@@ -29,7 +29,7 @@ class UserFactory extends Factory
             'username' => fake()->unique()->userName(),
             'avatar' => "https://randomuser.me/api/portraits/" .
                 fake()->randomElement(['men', 'women']) . '/' . rand(0, 99) . '.jpg',
-            'about' => fake()->paragraph(),
+            'about' => fake()->paragraph(1),
             'occupation' => fake()->jobTitle(),
             'company' => fake()->company(),
             'location' => fake()->city(),

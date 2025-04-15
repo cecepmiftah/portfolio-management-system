@@ -2,7 +2,7 @@ import { Head, Link } from "@inertiajs/react";
 import { motion, useAnimation, AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
 
-export default function Home() {
+export default function Home({ portfolios }) {
     const controls = useAnimation();
 
     // Animate elements when they come into view
@@ -398,42 +398,43 @@ export default function Home() {
                         viewport={{ once: true, margin: "-100px" }}
                         variants={containerVariants}
                     >
-                        {[1, 2, 3, 4, 5, 6].map((item) => (
-                            <motion.div
-                                key={item}
-                                className="group relative overflow-hidden rounded-2xl shadow-xl"
-                                variants={portfolioItemVariants}
-                                whileHover="hover"
-                            >
-                                <div className="aspect-[4/3] bg-neutral/10 relative">
-                                    <img
-                                        src={`https://picsum.photos/800/600?random=${item}`}
-                                        alt={`Portfolio ${item}`}
-                                        className="w-full h-full object-cover"
-                                    />
-                                    <motion.div
-                                        className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-6"
-                                        initial={{ opacity: 0 }}
-                                        whileHover={{ opacity: 1 }}
-                                        transition={{ duration: 0.3 }}
-                                    >
+                        {portfolios &&
+                            portfolios.map((item) => (
+                                <motion.div
+                                    key={item.id}
+                                    className="group relative overflow-hidden rounded-2xl shadow-xl"
+                                    variants={portfolioItemVariants}
+                                    whileHover="hover"
+                                >
+                                    <div className="aspect-[4/3] bg-neutral/10 relative">
+                                        <img
+                                            src={item.thumbnail}
+                                            alt={`Portfolio ${item.slug}`}
+                                            className="w-full h-full object-cover"
+                                        />
                                         <motion.div
-                                            className="text-white"
-                                            initial={{ y: 20 }}
-                                            whileHover={{ y: 0 }}
+                                            className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-6"
+                                            initial={{ opacity: 0 }}
+                                            whileHover={{ opacity: 1 }}
                                             transition={{ duration: 0.3 }}
                                         >
-                                            <h3 className="font-bold text-xl">
-                                                Project {item}
-                                            </h3>
-                                            <p className="text-white/80">
-                                                by Creative Designer
-                                            </p>
+                                            <motion.div
+                                                className="text-white"
+                                                initial={{ y: 20 }}
+                                                whileHover={{ y: 0 }}
+                                                transition={{ duration: 0.3 }}
+                                            >
+                                                <h3 className="font-bold text-xl">
+                                                    Project {item.title}
+                                                </h3>
+                                                <p className="text-white/80">
+                                                    by Creative Designer
+                                                </p>
+                                            </motion.div>
                                         </motion.div>
-                                    </motion.div>
-                                </div>
-                            </motion.div>
-                        ))}
+                                    </div>
+                                </motion.div>
+                            ))}
                     </motion.div>
 
                     <motion.div

@@ -7,10 +7,14 @@ use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SocialiteController;
+use App\Models\Portfolio;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return inertia('Home');
+    return inertia('Home', [
+        //Get 6 Porfolios with the most likes and most views
+        'portfolios' => Portfolio::withCount(['likes'])->orderBy('likes_count', 'desc')->orderBy('views', 'desc')->limit(6)->get()
+    ]);
 })->name('home');
 
 Route::middleware(['guest'])->group(function () {
