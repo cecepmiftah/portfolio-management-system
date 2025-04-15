@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { router, usePage } from "@inertiajs/react";
 import { motion, AnimatePresence } from "framer-motion";
+import avatarImg from "../../../img/person.png";
 
 export default function CommentSection({ portfolioId }) {
     const { auth } = usePage().props;
     const [comments, setComments] = useState([]);
     const [content, setContent] = useState("");
 
+    const commentFormRef = useRef(null);
     const [replyingTo, setReplyingTo] = useState(null);
 
     // Fetch comments
@@ -18,6 +20,23 @@ export default function CommentSection({ portfolioId }) {
         }
         getData();
     }, [portfolioId, comments]);
+
+    // Fungsi untuk handle reply dengan scroll dan animasi
+    const handleReplyClick = (commentId) => {
+        setReplyingTo(commentId);
+
+        // Scroll ke form setelah state diupdate
+        setTimeout(() => {
+            commentFormRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+            });
+
+            // Fokus ke textarea
+            const textarea = commentFormRef.current?.querySelector("textarea");
+            textarea?.focus();
+        }, 100);
+    };
 
     // Handle submit comment
     const handleSubmit = (e) => {
@@ -69,55 +88,144 @@ export default function CommentSection({ portfolioId }) {
                 )
             </h3>
 
-            {/* Comment Form */}
-            <form onSubmit={handleSubmit} className="mb-8">
-                <div className="flex gap-4">
-                    <div className="flex-shrink-0">
-                        <img
-                            src={
-                                auth.user?.avatar ||
-                                "/images/default-avatar.png"
-                            }
-                            alt={auth.user?.name}
-                            className="w-10 h-10 rounded-full object-cover"
-                        />
-                    </div>
-                    <div className="flex-grow">
-                        <textarea
-                            value={content}
-                            onChange={(e) => setContent(e.target.value)}
-                            placeholder={
-                                replyingTo
-                                    ? `Reply to comment...`
-                                    : "Add a comment..."
-                            }
-                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                            rows={3}
-                        />
-                        <div className="flex justify-between items-center mt-2">
-                            {replyingTo && (
-                                <div className="text-sm text-gray-500">
-                                    Replying to comment #{replyingTo}
-                                    <button
-                                        type="button"
-                                        onClick={() => setReplyingTo(null)}
-                                        className="ml-2 text-primary hover:underline"
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            )}
+            <motion.div
+                ref={commentFormRef}
+                initial={false}
+                animate={{
+                    backgroundColor: replyingTo
+                        ? "rgba(236, 72, 153, 0.05)"
+                        : "transparent",
+                    borderColor: replyingTo
+                        ? "rgba(236, 72, 153, 0.2)"
+                        : "transparent",
+                }}
+                transition={{ duration: 0.3 }}
+                className="rounded-lg p-4 border"
+            >
+                <form onSubmit={handleSubmit}>
+                    {replyingTo && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0 }}
+                            className="flex items-center justify-between mb-3 bg-pink-50 dark:bg-pink-900/20 rounded-full px-4 py-2"
+                        >
+                            <div className="flex items-center text-sm text-pink-600 dark:text-pink-300">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-4 w-4 mr-1"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
+                                    />
+                                </svg>
+                                Replying to comment #{replyingTo}
+                            </div>
                             <button
-                                type="submit"
-                                disabled={!content.trim()}
-                                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark disabled:opacity-50"
+                                type="button"
+                                onClick={() => setReplyingTo(null)}
+                                className="text-pink-600 dark:text-pink-300 hover:text-pink-800 dark:hover:text-pink-100 text-sm flex items-center"
                             >
-                                {replyingTo ? "Post Reply" : "Post Comment"}
+                                Cancel
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-4 w-4 ml-1"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
                             </button>
-                        </div>
-                    </div>
-                </div>
-            </form>
+                        </motion.div>
+                    )}
+
+                    <motion.textarea
+                        layout // Animasi layout saat ada/muncul reply header
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        placeholder={
+                            replyingTo
+                                ? "Write your reply..."
+                                : "Add a comment..."
+                        }
+                        className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
+                        rows={3}
+                        animate={{
+                            borderColor: replyingTo
+                                ? "rgba(236, 72, 153, 0.5)"
+                                : "#e5e7eb",
+                        }}
+                    />
+
+                    <motion.div
+                        animate={{
+                            x: replyingTo ? [0, -5, 5, -3, 3, 0] : 0,
+                        }}
+                        transition={{
+                            duration: 0.6,
+                            times: [0, 0.2, 0.4, 0.6, 0.8, 1],
+                            when: "onMount",
+                        }}
+                        className="flex justify-end mt-2"
+                    >
+                        <button
+                            type="submit"
+                            disabled={!content.trim()}
+                            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-pink-600 disabled:opacity-50 transition-colors flex items-center cursor-pointer"
+                        >
+                            {replyingTo ? (
+                                <>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-5 w-5 mr-1"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
+                                        />
+                                    </svg>
+                                    Post Reply
+                                </>
+                            ) : (
+                                <>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-5 w-5 mr-1"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M12 4v16m8-8H4"
+                                        />
+                                    </svg>
+                                    Post Comment
+                                </>
+                            )}
+                        </button>
+                    </motion.div>
+                </form>
+            </motion.div>
 
             {/* Comments List */}
             <div className="space-y-6">
@@ -130,7 +238,7 @@ export default function CommentSection({ portfolioId }) {
                         <CommentItem
                             key={comment.id}
                             comment={comment}
-                            onReply={setReplyingTo}
+                            onReply={handleReplyClick}
                             onDelete={handleDelete}
                             currentUserId={auth.user?.id}
                             portfolioId={portfolioId}
@@ -166,9 +274,7 @@ function CommentItem({
             <div className="flex gap-3">
                 <div className="flex-shrink-0">
                     <img
-                        src={
-                            comment.user.avatar || "/images/default-avatar.png"
-                        }
+                        src={comment.user.avatar || avatarImg}
                         alt={comment.user.name}
                         className="w-8 h-8 rounded-full object-cover"
                     />
@@ -177,7 +283,7 @@ function CommentItem({
                     <div className="flex items-center justify-between">
                         <div>
                             <span className="font-medium">
-                                {comment.user.name}
+                                {comment.user.username}
                             </span>
                             <span className="text-xs text-gray-500 ml-2">
                                 {new Date(comment.created_at).toLocaleString()}
