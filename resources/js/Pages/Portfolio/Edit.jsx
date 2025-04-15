@@ -4,8 +4,9 @@ import { memo, useState } from "react";
 import "reactjs-tiptap-editor/style.css";
 import { useDebouncedCallback } from "use-debounce";
 import PortfolioEditor from "../../Components/PortfolioComponents/PortfolioEditor";
+import CategoryInput from "../../Components/PortfolioComponents/InputCategory";
 
-const Edit = memo(({ portfolio, content }) => {
+const Edit = memo(({ portfolio, content, categories }) => {
     const { flash } = usePage().props;
 
     const [data, setData] = useState({
@@ -13,9 +14,12 @@ const Edit = memo(({ portfolio, content }) => {
         description: portfolio.description,
         project_url: portfolio.project_url,
         project_date: portfolio.project_date,
+        category: "",
     });
     const [contentState, setContentState] = useState(content);
     const [thumbnail, setThumbnail] = useState(data.thumbnail);
+
+    const [availableCategories, setAvailableCategories] = useState(categories);
 
     const [message, setMessage] = useState(flash.message);
     const [errors, setErrors] = useState(flash.errors || "");
@@ -54,6 +58,11 @@ const Edit = memo(({ portfolio, content }) => {
         // Tambahkan file jika ada perubahan
         if (thumbnail instanceof File) {
             formData.append("thumbnail", thumbnail);
+        }
+
+        // Tambahkan kategori yang dipilih
+        if (data.category) {
+            formData.append("category", data.category);
         }
 
         formData.append("_method", "PATCH");
@@ -183,6 +192,16 @@ const Edit = memo(({ portfolio, content }) => {
                         />
                     )}
                 </label>
+
+                <CategoryInput
+                    categories={availableCategories}
+                    selectedCategory={data.category}
+                    onCategoryChange={(value) =>
+                        setData({ ...data, category: value })
+                    }
+                    error={errors.category}
+                    previousCategory={portfolio.categories[0]?.name}
+                />
 
                 <PortfolioEditor
                     content={content}

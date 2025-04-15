@@ -1,74 +1,11 @@
 import { useForm, usePage } from "@inertiajs/react";
 import { memo, Suspense, useEffect, useState } from "react";
 import TextEditor from "reactjs-tiptap-editor";
-import {
-    BaseKit,
-    Link,
-    Image,
-    Color,
-    TextAlign,
-    BulletList,
-    OrderedList,
-    CodeBlock,
-    HorizontalRule,
-    FontFamily,
-    FontSize,
-    Heading,
-    Indent,
-    SlashCommand,
-} from "reactjs-tiptap-editor/extension-bundle";
+
 import "reactjs-tiptap-editor/style.css";
 import { useDebouncedCallback } from "use-debounce";
 import CategoryInput from "../../Components/PortfolioComponents/InputCategory";
-
-const ALL_EXTENSIONS = [
-    BaseKit.configure({
-        heading: {
-            levels: [1, 2],
-        },
-        dropcursor: { color: "#0066FF" },
-
-        characterCount: false,
-    }),
-    Link.configure({}),
-
-    SlashCommand.configure({}),
-
-    Color.configure({
-        types: ["textStyle", "highlight"],
-    }),
-    TextAlign.configure({
-        types: ["heading", "paragraph"],
-    }),
-    BulletList.configure({}),
-    OrderedList.configure({}),
-    Indent,
-    CodeBlock.configure({}),
-    HorizontalRule.configure({}),
-    FontFamily,
-    FontSize,
-    Heading,
-    Image.configure({
-        allowBase64: false,
-        upload: async (file) => {
-            const formData = new FormData();
-            formData.append("image", file);
-
-            const response = await fetch("/upload-image", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": document
-                        .querySelector('meta[name="csrf-token"]')
-                        .getAttribute("content"),
-                },
-                body: formData,
-            });
-
-            const result = await response.json();
-            return result.url; // Kembalikan URL dari backend
-        },
-    }),
-];
+import PortfolioEditor from "../../Components/PortfolioComponents/PortfolioEditor";
 
 const Create = memo(({ categories }) => {
     const [content, setContent] = useState(null);
@@ -111,12 +48,6 @@ const Create = memo(({ categories }) => {
             },
         });
     };
-
-    // useEffect(() => {
-    //     fetch("/categories")
-    //         .then((res) => res.json())
-    //         .then((data) => setAvailableCategories(data));
-    // }, []);
 
     return (
         <div className="p-4 max-w-5xl mx-auto">
@@ -215,56 +146,11 @@ const Create = memo(({ categories }) => {
                         error={errors.category}
                     />
 
-                    <TextEditor
-                        output="json"
+                    <PortfolioEditor
                         content={content}
                         onChangeContent={debounceUpdate}
-                        extensions={ALL_EXTENSIONS}
-                        dark={true}
-                        maxWidth="100%"
-                        bubbleMenu={true}
-                        floatingMenu={true}
-                        useEditorOptions={{
-                            editorProps: {
-                                attributes: {
-                                    class: "prose dark:prose-invert max-w-none min-h-[300px] p-4 border rounded",
-                                },
-                            },
-                        }}
-                        toolbar={[
-                            "heading",
-                            "|",
-                            "bold",
-                            "italic",
-                            "|",
-                            "Heading",
-                            "|",
-                            "fontSize",
-                            "fontFamily",
-                            "|",
-                            "link",
-                            "image",
-                            "|",
-                            "textAlign",
-                            "|",
-                            "bulletList",
-                            "orderedList",
-                            "indent",
-                            "|",
-                            "codeBlock",
-                            "|",
-                            "horizontalRule",
-                            "|",
-                            "color",
-                            "highlight",
-                            "|",
-                            "undo",
-                            "redo",
-                        ]}
+                        error={errors.content}
                     />
-                    {errors.content && (
-                        <p className="text-red-500">{errors.content}</p>
-                    )}
 
                     {/* Additional Fields */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

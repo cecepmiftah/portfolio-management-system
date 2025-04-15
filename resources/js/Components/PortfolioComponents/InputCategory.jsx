@@ -5,6 +5,7 @@ export default function CategoryInput({
     selectedCategory = "",
     onCategoryChange,
     error = null,
+    previousCategory = null,
 }) {
     const [inputValue, setInputValue] = useState(selectedCategory);
     const [showDropdown, setShowDropdown] = useState(false);
@@ -34,7 +35,11 @@ export default function CategoryInput({
     return (
         <div className="form-control relative">
             <label className="label">
-                <span className="label-text">Category</span>
+                <span className="label-text">
+                    {previousCategory
+                        ? `Current Category: ${previousCategory}`
+                        : "Category"}
+                </span>
             </label>
 
             <div className="relative">

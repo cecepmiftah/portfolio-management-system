@@ -3,7 +3,6 @@ import PortfolioCard from "@/Components/PortfolioCard";
 import Pagination from "../../Components/Pagination";
 
 export default function index({ portfolios }) {
-    console.log(portfolios);
     return (
         <div className="max-w-full">
             <div className="">

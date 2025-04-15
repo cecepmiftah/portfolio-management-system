@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -93,7 +94,7 @@ class PortfolioController extends Controller implements HasMiddleware
         ]);
 
         $portfolio = Portfolio::create([
-            'user_id' => auth()->user()->id,
+            'user_id' => Auth::id(),
             'title' => $request->title,
             'description' => $request->description,
             'slug' => $slug,
@@ -138,11 +139,12 @@ class PortfolioController extends Controller implements HasMiddleware
     public function edit(Portfolio $portfolio)
     {
         $content = json_decode($portfolio->content);
+        $categories = Category::all();
 
         return inertia('Portfolio/Edit', [
-            'portfolio' => $portfolio,
+            'portfolio' => $portfolio->load('categories'),
             'content' => $content,
-
+            'categories' => $categories,
         ]);
     }
 
@@ -161,6 +163,15 @@ class PortfolioController extends Controller implements HasMiddleware
                 'project_date' => 'nullable|date',
                 'thumbnail' => 'nullable|image|max:2048',
             ]);
+
+            if ($request->has('category')) {
+                $category = Category::createOrFirst([
+                    'name' => $request->category,
+                    'slug' => Str::slug($request->category),
+                ]);
+                // Detach old categories and attach new category
+                $portfolio->categories()->sync([$category->id]);
+            }
 
             if ($request->hasFile('thumbnail')) {
                 // Hapus thumbnail lama jika ada
@@ -223,6 +234,6 @@ class PortfolioController extends Controller implements HasMiddleware
         // Delete the portfolio
         $portfolio->delete();
 
-        return redirect()->route('portfolios.index')->with('message', 'Portfolio deleted successfully.');
+        return back()->with('message', 'Portfolio deleted successfully.');
     }
 }

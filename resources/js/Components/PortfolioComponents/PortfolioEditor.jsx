@@ -45,6 +45,8 @@ const ALL_EXTENSIONS = [
     Heading,
     Image.configure({
         allowBase64: false,
+        allowUpload: true,
+
         upload: async (file) => {
             const formData = new FormData();
             formData.append("image", file);
