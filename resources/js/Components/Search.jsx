@@ -2,18 +2,14 @@ import { useState } from "react";
 import { router } from "@inertiajs/react";
 import { AnimatePresence, motion } from "framer-motion";
 
-export default function Search({ initialSearch = "", initialCategory = "" }) {
+export default function Search({
+    initialSearch = "",
+    initialCategory = "",
+    categories,
+}) {
     const [searchTerm, setSearchTerm] = useState(initialSearch);
     const [selectedCategory, setSelectedCategory] = useState(initialCategory);
     const [isExpanded, setIsExpanded] = useState(false);
-
-    // Daftar kategori (bisa diganti dengan data dari props)
-    const categories = [
-        { id: 1, name: "Graphic Design", slug: "graphic-design" },
-        { id: 2, name: "Web Development", slug: "web-development" },
-        { id: 3, name: "Photography", slug: "photography" },
-        { id: 4, name: "Illustration", slug: "illustration" },
-    ];
 
     const handleSearch = (e) => {
         e.preventDefault();

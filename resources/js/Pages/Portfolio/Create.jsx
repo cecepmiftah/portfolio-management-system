@@ -42,10 +42,9 @@ const Create = memo(({ categories }) => {
             onSuccess: () => {
                 setMessage("Portfolio created successfully!");
             },
-            onError: (errors) => {
-                setMessage(errors);
-                console.error(errors);
-            },
+            // onError: (errors) => {
+            //     console.error(errors);
+            // },
         });
     };
 

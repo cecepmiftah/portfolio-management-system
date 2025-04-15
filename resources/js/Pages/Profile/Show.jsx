@@ -1,44 +1,56 @@
-import { Link, usePage, Head, router } from "@inertiajs/react";
-import avatarImg from "../../../img/person.png";
 import { useState } from "react";
-import PortfolioCardProfile from "../../Components/CardComponents/PortfolioCardProfile";
-import WorkExperienceSection from "../../Components/ProfileComponents/WorkExperienceSection";
+import { Link, router, usePage } from "@inertiajs/react";
+import { motion, AnimatePresence } from "framer-motion";
+import PortfolioCardProfile from "@/Components/CardComponents/PortfolioCardProfile";
+import WorkExperienceSection from "@/Components/ProfileComponents/WorkExperienceSection";
+import ContactMeSection from "../../Components/ProfileComponents/ContactMeSection";
 
 export default function Show({ user }) {
     const { auth, flash } = usePage().props;
     const [message, setMessage] = useState(flash.message);
 
-    // function handleDelete(e) {
-    //     e.preventDefault();
-    //     // router.delete(`/portfolios/${e.target.value}`, {
-    //     //     onSuccess: () => {
-    //     //         setMessage("Portfolio deleted successfully.");
-    //     //     },
-    //     //     onError: () => {
-    //     //         setMessage("Failed to delete portfolio.");
-    //     //     },
-    //     // });
-    // }
-
     return (
         <div className="min-h-screen bg-base-100">
-            {message && (
-                <div
-                    role="alert"
-                    className="alert alert-success alert-soft mb-4"
-                >
-                    <span>{message}</span>
-                </div>
-            )}
+            {/* Flash Message */}
+            <AnimatePresence>
+                {message && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        role="alert"
+                        className="alert alert-success mb-4 mx-4 mt-4"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="stroke-current shrink-0 h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                        </svg>
+                        <span>{message}</span>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {/* Cover Photo */}
             <div className="h-64 bg-gradient-to-r from-primary to-secondary relative">
                 <div className="absolute -bottom-16 left-8">
                     <div className="avatar">
                         <div className="w-32 h-32 rounded-full ring-4 ring-base-100 bg-base-100">
                             <img
-                                src={user.avatar ?? avatarImg}
+                                src={
+                                    user.avatar ?? "/images/default-avatar.png"
+                                }
                                 alt={user.username}
-                                className="object-cover"
+                                className="object-cover w-full h-full"
                             />
                         </div>
                     </div>
@@ -53,13 +65,14 @@ export default function Show({ user }) {
                         <div className="card bg-base-200 shadow-sm">
                             <div className="card-body">
                                 <h1 className="text-3xl font-bold">
-                                    {user.first_name} {user.last_name} |
+                                    {user.first_name} {user.last_name}
                                     <span className="text-primary">
                                         {" "}
                                         @{user.username}
                                     </span>
                                 </h1>
 
+                                {/* Occupation & Location */}
                                 {user.occupation && (
                                     <div className="flex items-center gap-2 mt-2">
                                         <svg
@@ -111,12 +124,14 @@ export default function Show({ user }) {
 
                                 <div className="divider my-2"></div>
 
+                                {/* About Section */}
                                 {user.about && (
                                     <p className="text-base-content/80">
                                         {user.about}
                                     </p>
                                 )}
 
+                                {/* Badges */}
                                 <div className="flex flex-wrap gap-2 mt-4">
                                     {user.website && (
                                         <a
@@ -141,7 +156,6 @@ export default function Show({ user }) {
                                             Website
                                         </a>
                                     )}
-
                                     <div className="badge badge-primary">
                                         <svg
                                             className="w-4 h-4 mr-1"
@@ -170,45 +184,52 @@ export default function Show({ user }) {
                                     {user.portfolios.length}
                                 </div>
                                 <div className="stat-desc">
-                                    Jan 1st - Feb 1st
+                                    Total portfolio works
                                 </div>
                             </div>
                         </div>
+
+                        {/* Contact Me Section */}
+                        <ContactMeSection setMessage={setMessage} user={user} />
+
+                        {/* Edit Profile Link */}
                         {auth.user && auth.user.id === user.id && (
-                            <div className="p-4 shadow bg-base-200 w-full">
-                                <Link
-                                    href={`/user/${user.username}/edit`}
-                                    className="link"
-                                >
-                                    <div className="text-lg font-bold">
-                                        Edit your profile
-                                    </div>
-                                </Link>
-                            </div>
+                            <Link
+                                href={`/user/${user.username}/edit`}
+                                className="btn btn-outline w-full"
+                            >
+                                Edit Profile
+                            </Link>
                         )}
-                        <div>
-                            <WorkExperienceSection
-                                experiences={user.work_experiences}
-                            />
-                        </div>
+
+                        {/* Work Experience Section */}
+                        <WorkExperienceSection
+                            experiences={user.work_experiences}
+                        />
                     </div>
 
-                    {/* Right Column */}
+                    {/* Right Column - Portfolio Works */}
                     <div className="lg:w-2/3">
                         <div className="card bg-base-200 shadow-sm">
                             <div className="card-body">
                                 <h2 className="card-title text-2xl">
                                     Portfolio Works
                                 </h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                    {user.portfolios.map((item) => (
-                                        <PortfolioCardProfile
-                                            key={item.id}
-                                            item={item}
-                                            user={auth.user}
-                                        />
-                                    ))}
-                                </div>
+                                {user.portfolios.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                        {user.portfolios.map((item) => (
+                                            <PortfolioCardProfile
+                                                key={item.id}
+                                                item={item}
+                                                user={auth.user}
+                                            />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-8 text-gray-500">
+                                        No portfolio works yet
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

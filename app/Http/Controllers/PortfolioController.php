@@ -34,7 +34,8 @@ class PortfolioController extends Controller implements HasMiddleware
         $categorySlug = request('category');
 
         $portfolios = Portfolio::query()
-            ->with(['user', 'categories']) // Eager load categories
+            ->with(['user', 'likes.user', 'categories'])
+            ->withCount('likes')
             ->when($searchTerm, function ($query) use ($searchTerm) {
                 $query->where(function ($q) use ($searchTerm) {
                     $q->where('title', 'like', '%' . $searchTerm . '%')
