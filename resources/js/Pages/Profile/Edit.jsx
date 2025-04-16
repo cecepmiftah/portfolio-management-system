@@ -1,7 +1,8 @@
-import { Head, router, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, router, useForm, usePage } from "@inertiajs/react";
 import { useEffect, useRef, useState } from "react";
 import avatarImg from "../../../img/person.png";
 import WorkExperienceInput from "../../Components/ProfileComponents/WorkExperienceInput";
+import ConfirmationModal from "../../Components/ConfirmationModal";
 
 const experiences = [
     {
@@ -60,6 +61,8 @@ export default function Edit({ user }) {
     const [message, setMessage] = useState(flash.message);
     const [preview, setPreview] = useState(user.avatar ?? avatarImg);
     const [loadingImage, setLoadingImage] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const fileInput = useRef(null);
 
     const { data, setData, patch, processing, errors } = useForm({
@@ -74,6 +77,15 @@ export default function Edit({ user }) {
         city: user.city || "",
         website: user.website || "",
     });
+
+    const handleDeleteAccount = () => {
+        setIsDeleting(true);
+        router.delete(`/user/${user.id}`, {
+            preserveScroll: true,
+            onSuccess: () => setShowDeleteModal(false),
+            onFinish: () => setIsDeleting(false),
+        });
+    };
 
     const handleAvatarChange = (e) => {
         const file = e.target.files[0];
@@ -383,7 +395,31 @@ export default function Edit({ user }) {
                         />
                     </div>
                 </div>
+                <hr />
             </div>
+            {/* Delete Account */}
+            <div className="mt-8 border border-red-500 hover:border-red-400 shadow-lg p-6 mx-auto text-center">
+                <h2 className="text-xl font-semibold mb-4">
+                    Delete Account Section
+                </h2>
+                <button
+                    onClick={() => setShowDeleteModal(true)}
+                    className="btn btn-error"
+                >
+                    Delete Account
+                </button>
+            </div>
+
+            <ConfirmationModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={handleDeleteAccount}
+                title="Delete Account"
+                description="Are you sure you want to delete your account? All of your data will be permanently removed. This action cannot be undone."
+                confirmText="Delete Account"
+                isDestructive={true}
+                isLoading={isDeleting}
+            />
         </div>
     );
 }

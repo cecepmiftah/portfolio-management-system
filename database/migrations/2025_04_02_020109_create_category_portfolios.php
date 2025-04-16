@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('category_portfolios', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Portfolio::class);
-            $table->foreignIdFor(Category::class);
+            $table->foreignIdFor(Portfolio::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Category::class)->constrained()->onDelete('cascade');
         });
     }
 

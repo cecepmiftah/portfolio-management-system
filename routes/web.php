@@ -45,7 +45,7 @@ Route::controller(ProfileController::class)->group(function () {
     Route::post('/user/{user:username}/work-experiences', 'updateWorkExperiences')->name('user.work-experiences.update');
     Route::delete('/user/{user:username}/work-experiences', 'updateWorkExperiences')->name('user.work-experiences.update');
 
-    // Route::delete('/user/{user:username}', 'destroy')->name('user.destroy');
+    Route::delete('/user/{user}', 'destroy')->name('user.destroy');
 });
 
 Route::controller(PortfolioController::class)->group(function () {

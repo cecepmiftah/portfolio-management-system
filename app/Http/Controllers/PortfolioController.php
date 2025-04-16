@@ -206,7 +206,10 @@ class PortfolioController extends Controller implements HasMiddleware
             if ($request->hasFile('thumbnail')) {
                 // Hapus thumbnail lama jika ada
                 if ($portfolio->thumbnail) {
-                    Storage::delete($portfolio->thumbnail);
+                    //Remove /Storage/ from the path
+                    $thumbnailPath = str_replace('/storage/', '', $portfolio->thumbnail);
+                    // Delete the old thumbnail
+                    Storage::disk('public')->delete($thumbnailPath);
                 }
                 $path = $request->file('thumbnail')->store('portfolios-thumbnails', 'public');
                 $validated['thumbnail'] = Storage::url($path);

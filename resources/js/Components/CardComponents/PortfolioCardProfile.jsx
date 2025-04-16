@@ -1,6 +1,21 @@
 import { Link, router } from "@inertiajs/react";
+import ConfirmationModal from "../ConfirmationModal";
+import { useState } from "react";
 
 export default function PortfolioCardProfile({ item, user }) {
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const handleDelete = () => {
+        setShowDeleteModal(true);
+        router.delete(`/portfolios/${item.id}`, {
+            onSuccess: () => {
+                setShowDeleteModal(false);
+            },
+            onFinish: () => setIsDeleting(false),
+        });
+    };
+
     return (
         <div key={item.id} className="relative group">
             {/* Link untuk mengakses detail portfolio */}
@@ -28,17 +43,7 @@ export default function PortfolioCardProfile({ item, user }) {
             {user && user.id === item.user_id && (
                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (
-                                confirm(
-                                    "Are you sure you want to delete this portfolio?"
-                                )
-                            ) {
-                                router.delete(`/portfolios/${item.id}`);
-                            }
-                        }}
+                        onClick={() => setShowDeleteModal(true)}
                         className="btn btn-circle btn-sm btn-error"
                         title="Delete Portfolio"
                     >
@@ -59,6 +64,17 @@ export default function PortfolioCardProfile({ item, user }) {
                     </button>
                 </div>
             )}
+
+            <ConfirmationModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={handleDelete}
+                title="Delete Portfolio"
+                description="Are you sure you want to delete this portfolio?. Data will be permanently removed. This action cannot be undone."
+                confirmText="Delete Portfolio"
+                isDestructive={true}
+                isLoading={isDeleting}
+            />
         </div>
     );
 }

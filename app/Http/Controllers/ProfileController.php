@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller implements HasMiddleware
@@ -44,7 +45,7 @@ class ProfileController extends Controller implements HasMiddleware
 
     public function update(User $user, Request $request)
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         $validated = $request->validate([
             'first_name' => 'required|string|max:50',
@@ -113,6 +114,8 @@ class ProfileController extends Controller implements HasMiddleware
             ]);
 
             if ($user->avatar) {
+                //Remove /storage/ from url
+                $user->avatar = str_replace('/storage/', '', $user->avatar);
                 Storage::disk('public')->delete($user->avatar);
             }
 
@@ -124,8 +127,44 @@ class ProfileController extends Controller implements HasMiddleware
                 'message' => 'Avatar updated successfully'
             ]);
         } else {
-
             return back()->withErrors(['error' => 'Failed to update avatar']);
         }
+    }
+
+
+    public function destroy(User $user)
+    {
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
+        //Delete all portfolios
+        foreach ($user->portfolios as $portfolio) {
+            if ($portfolio->thumbnail) {
+                //Remove /storage/ from url
+                $portfolio->thumbnail = str_replace('/storage/', '', $portfolio->thumbnail);
+                // Delete the old thumbnail
+                Storage::disk('public')->delete($portfolio->thumbnail);
+            }
+            $portfolio->delete();
+        }
+
+        //Delete all work experiences
+        foreach ($user->workExperiences as $workExperience) {
+            $workExperience->delete();
+        }
+        //Delete all likes
+        foreach ($user->likedPortfolios as $like) {
+            $like->delete();
+        }
+
+        //Delete all comments
+        foreach ($user->comments as $comment) {
+            $comment->delete();
+        }
+
+        //Delete User
+        $user->delete();
+        return to_route('home')->with('message', 'Account deleted successfully');
     }
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, router, usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { motion, AnimatePresence } from "framer-motion";
 import PortfolioCardProfile from "@/Components/CardComponents/PortfolioCardProfile";
 import WorkExperienceSection from "@/Components/ProfileComponents/WorkExperienceSection";

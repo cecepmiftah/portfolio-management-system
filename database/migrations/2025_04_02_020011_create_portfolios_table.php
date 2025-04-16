@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('portfolios', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->unsignedBigInteger('views')->default(0);
             $table->string('title');
             $table->string('description')->nullable();

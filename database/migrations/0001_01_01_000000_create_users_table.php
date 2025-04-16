@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('password')->nullable();
             $table->string('google_id')->nullable();
             $table->string('avatar')->nullable();
+            // $table->string('avatar_path')->nullable();
             $table->string('provider')->nullable();
             $table->softDeletes();
             $table->rememberToken();

@@ -29,11 +29,11 @@ export default function Register() {
                 </div>
             )}
             <div className="hero bg-base-200 min-h-screen">
-                <div className="hero-content w-full flex-col md:w-1/2 lg:flex-row">
+                <div className="hero-content w-full flex-col lg:w-full lg:flex-row">
                     <div className="hidden md:block text-center w-1/3 lg:text-left">
                         <figure className="diff aspect-16/9" tabIndex={0}>
                             <div className="diff-item-1" role="img">
-                                <div className="bg-primary text-primary-content grid place-content-center text-6xl font-black">
+                                <div className="bg-primary text-primary-content grid place-content-center text-5xl lg:text-6xl font-black">
                                     FolioSnap
                                 </div>
                             </div>
@@ -42,7 +42,7 @@ export default function Register() {
                                 role="img"
                                 tabIndex={0}
                             >
-                                <div className="bg-base-200 grid place-content-center text-6xl font-black">
+                                <div className="bg-base-200 grid place-content-center text-5xl lg:text-6xl font-black">
                                     FolioSnap
                                 </div>
                             </div>

@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('medias', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Portfolio::class);
+            $table->foreignIdFor(Portfolio::class)->constrained()->cascadeOnDelete();
             $table->string('file_path');
             $table->string('file_type');
             $table->string('alt_text')->nullable();
