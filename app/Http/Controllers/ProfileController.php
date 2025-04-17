@@ -26,6 +26,7 @@ class ProfileController extends Controller implements HasMiddleware
             'workExperiences' => function ($query) {
                 $query->latest();
             },
+            'likedPortfolios.portfolio',
         ]);
         return inertia('Profile/Show', [
             'user' => $user

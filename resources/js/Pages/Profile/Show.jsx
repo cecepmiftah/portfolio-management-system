@@ -8,6 +8,7 @@ import ContactMeSection from "../../Components/ProfileComponents/ContactMeSectio
 export default function Show({ user }) {
     const { auth, flash } = usePage().props;
     const [message, setMessage] = useState(flash.message);
+    const [activeTab, setActiveTab] = useState("myPortfolios"); // 'myPortfolios' or 'likedPortfolios'
 
     return (
         <div className="min-h-screen bg-base-100">
@@ -212,24 +213,142 @@ export default function Show({ user }) {
                     <div className="lg:w-2/3">
                         <div className="card bg-base-200 shadow-sm">
                             <div className="card-body">
-                                <h2 className="card-title text-2xl">
-                                    Portfolio Works
-                                </h2>
-                                {user.portfolios.length > 0 ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                        {user.portfolios.map((item) => (
-                                            <PortfolioCardProfile
-                                                key={item.id}
-                                                item={item}
-                                                user={auth.user}
+                                {/* Tabs Navigation */}
+                                <div className="tabs tabs-boxed bg-base-200 p-1">
+                                    <button
+                                        className={`tab tab-lg flex-1 ${
+                                            activeTab === "myPortfolios"
+                                                ? "tab-active"
+                                                : ""
+                                        }`}
+                                        onClick={() =>
+                                            setActiveTab("myPortfolios")
+                                        }
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5 mr-2"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                                             />
-                                        ))}
+                                        </svg>
+                                        My Works
+                                    </button>
+                                    <button
+                                        className={`tab tab-lg flex-1 ${
+                                            activeTab === "likedPortfolios"
+                                                ? "tab-active"
+                                                : ""
+                                        }`}
+                                        onClick={() =>
+                                            setActiveTab("likedPortfolios")
+                                        }
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-5 w-5 mr-2"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                                            />
+                                        </svg>
+                                        Liked Works
+                                    </button>
+                                </div>
+
+                                {/* Tab Contents */}
+                                <div className="mt-4">
+                                    {/* My Portfolio Works Tab */}
+                                    <div
+                                        className={`${
+                                            activeTab === "myPortfolios"
+                                                ? "block"
+                                                : "hidden"
+                                        }`}
+                                    >
+                                        {user.portfolios.length > 0 ? (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {user.portfolios.map((item) => (
+                                                    <PortfolioCardProfile
+                                                        key={item.id}
+                                                        item={item}
+                                                        user={auth.user}
+                                                    />
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-8 text-gray-500">
+                                                No portfolio works yet
+                                                {auth.user?.id === user.id && (
+                                                    <Link
+                                                        href="/portfolios/create"
+                                                        className="btn btn-primary btn-sm mt-4"
+                                                    >
+                                                        Create Your First
+                                                        Portfolio
+                                                    </Link>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
-                                ) : (
-                                    <div className="text-center py-8 text-gray-500">
-                                        No portfolio works yet
+
+                                    {/* Liked Portfolios Tab */}
+                                    <div
+                                        className={`${
+                                            activeTab === "likedPortfolios"
+                                                ? "block"
+                                                : "hidden"
+                                        }`}
+                                    >
+                                        {user.liked_portfolios?.length > 0 ? (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {user.liked_portfolios.map(
+                                                    (item) => (
+                                                        <PortfolioCardProfile
+                                                            key={item.id}
+                                                            item={
+                                                                item.portfolio
+                                                            }
+                                                            user={auth.user}
+                                                        />
+                                                    )
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-8 text-gray-500">
+                                                {auth.user?.id === user.id ? (
+                                                    <div>
+                                                        <p>
+                                                            You haven't liked
+                                                            any portfolios yet
+                                                        </p>
+                                                        <Link
+                                                            href="/portfolios"
+                                                            className="btn btn-outline btn-sm mt-4"
+                                                        >
+                                                            Explore Portfolios
+                                                        </Link>
+                                                    </div>
+                                                ) : (
+                                                    `${user.first_name} hasn't liked any portfolios yet`
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
-                                )}
+                                </div>
                             </div>
                         </div>
                     </div>
