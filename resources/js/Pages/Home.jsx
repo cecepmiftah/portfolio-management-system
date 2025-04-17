@@ -428,7 +428,8 @@ export default function Home({ portfolios }) {
                                                     Project {item.title}
                                                 </h3>
                                                 <p className="text-white/80">
-                                                    by Creative Designer
+                                                    by {item.user.first_name}{" "}
+                                                    {item.user?.last_name}
                                                 </p>
                                             </motion.div>
                                         </motion.div>

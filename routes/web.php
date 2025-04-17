@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LikeController;
@@ -14,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return inertia('Home', [
         //Get 6 Porfolios with the most likes and most views
-        'portfolios' => Portfolio::withCount(['likes'])->orderBy('likes_count', 'desc')->orderBy('views', 'desc')->limit(6)->get()
+        'portfolios' => Portfolio::with(['user'])->withCount(['likes'])->orderBy('likes_count', 'desc')->orderBy('views', 'desc')->limit(6)->get()
     ]);
 })->name('home');
 
@@ -68,3 +70,20 @@ Route::post('comments', [CommentController::class, 'store'])->name('comments.sto
 Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
 Route::post('/contact/{user}', [ContactController::class, 'send'])->name('contact.send');
+
+// Password Reset Routes
+Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
+    ->middleware('guest')
+    ->name('password.request');
+
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->middleware('guest')
+    ->name('password.email');
+
+Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->middleware('guest')
+    ->name('password.reset');
+
+Route::post('/reset-password', [NewPasswordController::class, 'store'])
+    ->middleware('guest')
+    ->name('password.update');

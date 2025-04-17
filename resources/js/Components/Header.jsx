@@ -340,7 +340,7 @@ export default function Header() {
             </div>
 
             {/* Spacer untuk konten di bawah fixed header */}
-            <div className="h-20"></div>
+            <div className="h-16"></div>
         </>
     );
 }

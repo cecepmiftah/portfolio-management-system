@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export default function index({ portfolios, filters, categories }) {
     return (
-        <div className="max-w-full">
+        <div className="max-w-full mt-4">
             <div className="mx-auto">
                 <div className="text-center mx-auto w-[60%] my-6 space-y-4">
                     <motion.h1

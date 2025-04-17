@@ -49,7 +49,7 @@ const Create = memo(({ categories }) => {
     };
 
     return (
-        <div className="p-4 max-w-5xl mx-auto">
+        <div className="p-4 max-w-5xl mx-auto mt-4">
             {/* Header Section */}
             <div className="text-center mb-8">
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2">

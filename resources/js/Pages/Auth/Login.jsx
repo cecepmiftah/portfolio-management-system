@@ -1,10 +1,11 @@
-import { useForm } from "@inertiajs/react";
+import { Link, useForm, usePage } from "@inertiajs/react";
 
-export default function Login() {
+export default function Login({ status }) {
     const { data, setData, post, processing, errors } = useForm({
         email: "",
         password: "",
     });
+    const { message } = usePage().props.flash;
 
     function submit(e) {
         e.preventDefault();
@@ -19,6 +20,26 @@ export default function Login() {
                     <span>{errors.googleError}</span>
                 </div>
             )}
+
+            {status ||
+                (message && (
+                    <div className="alert alert-success mb-4">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="stroke-current shrink-0 h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                        </svg>
+                        <span>{status || message}</span>
+                    </div>
+                ))}
             <div className="hero bg-base-200 min-h-screen">
                 <div className="hero-content w-full flex-col lg:flex-row">
                     <div className="hidden md:block text-center md:w-1/2 lg:w-1/3 lg:text-left">
@@ -82,9 +103,12 @@ export default function Login() {
                                 )}
 
                                 <div>
-                                    <a className="link link-hover">
+                                    <Link
+                                        href="/forgot-password"
+                                        className="link link-hover"
+                                    >
                                         Forgot password?
-                                    </a>
+                                    </Link>
                                 </div>
                                 <button
                                     type="submit"

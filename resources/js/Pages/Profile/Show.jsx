@@ -291,7 +291,7 @@ export default function Show({ user }) {
                                             </div>
                                         ) : (
                                             <div className="text-center py-8 text-gray-500">
-                                                No portfolio works yet
+                                                <p>No portfolio works yet</p>
                                                 {auth.user?.id === user.id && (
                                                     <Link
                                                         href="/portfolios/create"
