@@ -63,6 +63,7 @@ export default function Header() {
                     <div className="flex-1">
                         <Link
                             href="/"
+                            prefetch
                             className="btn btn-ghost text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
                         >
                             FolioSnap
@@ -75,6 +76,7 @@ export default function Header() {
                             <li>
                                 <Link
                                     href="/"
+                                    prefetch
                                     className={`hover:text-primary transition-colors ${
                                         url === "/"
                                             ? "bg-base-200 text-primary"
@@ -87,6 +89,7 @@ export default function Header() {
                             <li>
                                 <Link
                                     href="/portfolios"
+                                    prefetch
                                     className={`hover:text-primary transition-colors ${
                                         url === "/portfolios"
                                             ? "bg-base-200 text-primary"
@@ -102,6 +105,7 @@ export default function Header() {
                                     <li>
                                         <Link
                                             href="/portfolios/create"
+                                            prefetch
                                             className="btn btn-primary btn-sm rounded-full px-6 hover:shadow-lg transition-all"
                                         >
                                             <svg
@@ -144,6 +148,7 @@ export default function Header() {
                                             <li>
                                                 <Link
                                                     href={`/user/${auth.user.username}`}
+                                                    prefetch
                                                     className="hover:text-primary"
                                                 >
                                                     <svg
@@ -194,6 +199,7 @@ export default function Header() {
                                     <li>
                                         <Link
                                             href="/login"
+                                            prefetch
                                             className="btn btn-ghost btn-sm rounded-full hover:bg-base-200 transition-all"
                                         >
                                             Log In
@@ -202,6 +208,7 @@ export default function Header() {
                                     <li>
                                         <Link
                                             href="/register"
+                                            prefetch
                                             className="btn btn-primary btn-sm rounded-full px-6 hover:shadow-lg transition-all"
                                         >
                                             Sign Up
@@ -238,6 +245,7 @@ export default function Header() {
                             <div className="flex items-center gap-4 mb-6 p-4 bg-base-200 rounded-lg">
                                 <Link
                                     href={`/user/${auth.user.username}`}
+                                    prefetch
                                     className="avatar online"
                                 >
                                     <div className="w-12 rounded-full">
@@ -250,6 +258,7 @@ export default function Header() {
                                 <div>
                                     <Link
                                         href={`/user/${auth.user.username}`}
+                                        prefetch
                                         className="font-semibold hover:text-primary"
                                     >
                                         <p className="text-sm opacity-70">
@@ -264,6 +273,7 @@ export default function Header() {
                             <li>
                                 <Link
                                     href="/"
+                                    prefetch
                                     className={`hover:text-primary transition-colors ${
                                         url === "/"
                                             ? "bg-base-200 text-primary"
@@ -276,6 +286,7 @@ export default function Header() {
                             <li>
                                 <Link
                                     href="/portfolios"
+                                    prefetch
                                     className={`hover:text-primary transition-colors ${
                                         url === "/portfolios"
                                             ? "bg-base-200 text-primary"
@@ -290,6 +301,7 @@ export default function Header() {
                                 <li>
                                     <Link
                                         href="/portfolios/create"
+                                        prefetch
                                         className={`hover:text-primary transition-colors ${
                                             url === "/portfolios/create"
                                                 ? "bg-base-200 text-primary"
@@ -319,6 +331,7 @@ export default function Header() {
                                     <li>
                                         <Link
                                             href="/login"
+                                            prefetch
                                             className="btn btn-ghost btn-block justify-start hover:bg-base-200"
                                         >
                                             Log In
@@ -327,6 +340,7 @@ export default function Header() {
                                     <li>
                                         <Link
                                             href="/register"
+                                            prefetch
                                             className="btn btn-primary btn-block justify-start"
                                         >
                                             Sign Up
